@@ -736,7 +736,7 @@ const TaskManager = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-white/90 text-sm font-bold">Pendentes</p>
-                  <p className="text-3xl font-bold text-white">{filteredTasks.filter(t => t.status === 'pendente').length}</p>
+                  <p className="text-3xl font-bold text-white">{filteredTasks.filter(t => t.status === 'pendente' || t.status === 'em_andamento').length}</p>
                 </div>
                 <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center ring-1 ring-white/30">
                   <Clock className="w-6 h-6 text-white" />
@@ -748,7 +748,7 @@ const TaskManager = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-yellow-400 text-sm font-bold">Pendentes</p>
-                  <p className="text-3xl font-bold text-yellow-400">{filteredTasks.filter(t => t.status === 'pendente').length}</p>
+                  <p className="text-3xl font-bold text-yellow-400">{filteredTasks.filter(t => t.status === 'pendente' || t.status === 'em_andamento').length}</p>
                 </div>
                 <div className="w-12 h-12 bg-slate-700/70 rounded-full flex items-center justify-center">
                   <Clock className="w-6 h-6 text-yellow-400" />
