@@ -759,6 +759,36 @@ const TaskManager = () => {
 
           <Card 
             className="cursor-pointer transition-colors"
+            onClick={() => handleStatsClick('overdue')}
+          >
+            {/* LIGHT */}
+            <CardContent className="p-6 rounded-lg text-white bg-gradient-to-br from-orange-500 to-orange-600 shadow-md dark:hidden">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-white/80 text-sm font-bold">Atrasadas</p>
+                  <p className="text-3xl font-bold">{getFilterCount('overdue')}</p>
+                </div>
+                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center ring-1 ring-white/30">
+                  <AlertTriangle className="w-6 h-6 text-white" />
+                </div>
+              </div>
+            </CardContent>
+            {/* DARK */}
+            <CardContent className="hidden dark:block p-6 rounded-lg bg-slate-800/50 border border-slate-700/50">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-orange-400 text-sm font-bold">Atrasadas</p>
+                  <p className="text-3xl font-bold text-orange-400">{getFilterCount('overdue')}</p>
+                </div>
+                <div className="w-12 h-12 bg-slate-700/70 rounded-full flex items-center justify-center">
+                  <AlertTriangle className="w-6 h-6 text-orange-400" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className="cursor-pointer transition-colors"
             onClick={() => handleStatsClick('concluida')}
           >
             {/* LIGHT */}
@@ -782,36 +812,6 @@ const TaskManager = () => {
                 </div>
                 <div className="w-12 h-12 bg-slate-700/70 rounded-full flex items-center justify-center">
                   <CheckCircle className="w-6 h-6 text-green-400" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card 
-            className="cursor-pointer transition-colors"
-            onClick={() => handleStatsClick('overdue')}
-          >
-            {/* LIGHT */}
-            <CardContent className="p-6 rounded-lg text-white bg-gradient-to-br from-red-500 to-red-600 shadow-md dark:hidden">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-white/80 text-sm font-bold">Atrasadas</p>
-                  <p className="text-3xl font-bold">{getFilterCount('overdue')}</p>
-                </div>
-                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center ring-1 ring-white/30">
-                  <AlertTriangle className="w-6 h-6 text-white" />
-                </div>
-              </div>
-            </CardContent>
-            {/* DARK */}
-            <CardContent className="hidden dark:block p-6 rounded-lg bg-slate-800/50 border border-slate-700/50">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-red-400 text-sm font-bold">Atrasadas</p>
-                  <p className="text-3xl font-bold text-red-400">{getFilterCount('overdue')}</p>
-                </div>
-                <div className="w-12 h-12 bg-slate-700/70 rounded-full flex items-center justify-center">
-                  <AlertTriangle className="w-6 h-6 text-red-400" />
                 </div>
               </div>
             </CardContent>
