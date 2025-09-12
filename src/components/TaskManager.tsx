@@ -171,18 +171,23 @@ const TaskManager = () => {
    * - Status específicos = selectedStatus (pendente, concluida)
    */
   const handleStatsClick = (filterType: 'all' | 'pendente' | 'concluida' | 'overdue') => {
+    console.log('🎯 CLIQUE NO CARD:', filterType);
+    
     if (filterType === 'overdue') {
       // Para tarefas atrasadas, usar activeFilter (filtro temporal)
       setActiveFilter('overdue');
       setSelectedStatus('all'); // Resetar filtro de status
+      console.log('🔄 Estado: activeFilter=overdue, selectedStatus=all');
     } else if (filterType === 'all') {
       // Para "Total", mostrar todas as tarefas
       setActiveFilter('all');
       setSelectedStatus('all');
+      console.log('🔄 Estado: activeFilter=all, selectedStatus=all');
     } else {
       // Para status específicos (pendente, concluida), usar selectedStatus
       setSelectedStatus(filterType);
       setActiveFilter('all'); // Resetar filtro temporal
+      console.log(`🔄 Estado: activeFilter=all, selectedStatus=${filterType}`);
     }
     
     // Limpar filtros avançados relevantes, preservando o filtro de usuário
