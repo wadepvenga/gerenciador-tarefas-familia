@@ -846,7 +846,7 @@ const TaskManager = () => {
             >
               <ChevronLeft className="w-4 h-4" />
             </Button>
-            <h2 className="text-lg md:text-xl font-semibold text-foreground text-center min-w-[200px]">
+            <h2 className="text-sm md:text-lg font-semibold text-foreground text-center min-w-[180px] md:min-w-[200px]">
               {getViewTitleBR(currentView, selectedDate)}
             </h2>
             <Button
@@ -860,12 +860,12 @@ const TaskManager = () => {
           </div>
 
           {/* Linha 2: Botões de Visualização */}
-          <div className="flex items-center justify-center gap-2 mb-4">
+          <div className="flex items-center justify-center gap-2 mb-4 w-full">
             <Button
               onClick={() => setCurrentView('day')}
               variant={currentView === 'day' ? 'default' : 'outline'}
               size="sm"
-              className={currentView === 'day' ? 'bg-primary text-primary-foreground hover:opacity-90' : 'border-border'}
+              className={`flex-1 ${currentView === 'day' ? 'bg-primary text-primary-foreground hover:opacity-90' : 'border-border'}`}
             >
               Dia
             </Button>
@@ -873,7 +873,7 @@ const TaskManager = () => {
               onClick={() => setCurrentView('week')}
               variant={currentView === 'week' ? 'default' : 'outline'}
               size="sm"
-              className={currentView === 'week' ? 'bg-primary text-primary-foreground hover:opacity-90' : 'border-border'}
+              className={`flex-1 ${currentView === 'week' ? 'bg-primary text-primary-foreground hover:opacity-90' : 'border-border'}`}
             >
               Semana
             </Button>
@@ -881,17 +881,20 @@ const TaskManager = () => {
               onClick={() => setCurrentView('month')}
               variant={currentView === 'month' ? 'default' : 'outline'}
               size="sm"
-              className={currentView === 'month' ? 'bg-primary text-primary-foreground hover:opacity-90' : 'border-border'}
+              className={`flex-1 ${currentView === 'month' ? 'bg-primary text-primary-foreground hover:opacity-90' : 'border-border'}`}
             >
               Mês
             </Button>
           </div>
 
-          <TaskFilters
-            activeFilter={activeFilter}
-            onFilterChange={setActiveFilter}
-            getFilterCount={getFilterCount}
-          />
+          {/* Filtros Temporais - Ocultos em Mobile */}
+          <div className="hidden md:block">
+            <TaskFilters
+              activeFilter={activeFilter}
+              onFilterChange={setActiveFilter}
+              getFilterCount={getFilterCount}
+            />
+          </div>
         </div>
 
         {/* Conteúdo das tarefas */}
