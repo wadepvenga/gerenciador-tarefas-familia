@@ -475,12 +475,11 @@ Esta ação NÃO excluirá a conta dele no sistema da Rockfeller, mas ele não p
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="bg-card border-border dark:bg-slate-800 dark:border-slate-700">
-                          <SelectItem value="admin">Administrador</SelectItem>
-                          <SelectItem value="pai">Pai</SelectItem>
-                          <SelectItem value="mae">Mãe</SelectItem>
-                          <SelectItem value="filho">Filho</SelectItem>
-                          <SelectItem value="filha">Filha</SelectItem>
-                          <SelectItem value="outro">Outro Familiar</SelectItem>
+                          {getRoleOptions().map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
@@ -677,12 +676,11 @@ Esta ação NÃO excluirá a conta dele no sistema da Rockfeller, mas ele não p
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="bg-slate-800 border-slate-700">
-                  <SelectItem value="admin">Administrador</SelectItem>
-                  <SelectItem value="pai">Pai</SelectItem>
-                  <SelectItem value="mae">Mãe</SelectItem>
-                  <SelectItem value="filho">Filho</SelectItem>
-                  <SelectItem value="filha">Filha</SelectItem>
-                  <SelectItem value="outro">Outro Familiar</SelectItem>
+                  {getRoleOptions().map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
