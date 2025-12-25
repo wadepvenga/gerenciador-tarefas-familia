@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -107,7 +107,7 @@ const CreateTaskDialog: React.FC<CreateTaskDialogProps> = ({
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto bg-card text-foreground border border-border dark:bg-slate-800 dark:border-slate-700">
         <DialogHeader>
           <DialogTitle className="text-foreground dark:text-white">Criar Nova Tarefa</DialogTitle>
-          <div className="sr-only">Preencha os dados abaixo para criar uma nova tarefa.</div>
+          <DialogDescription className="sr-only">Preencha os dados abaixo para criar uma nova tarefa.</DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <div>

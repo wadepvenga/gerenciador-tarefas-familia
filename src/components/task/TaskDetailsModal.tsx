@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, CheckCircle, User, Play, X, Trash2, Users } from 'lucide-react';
@@ -226,7 +226,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-card text-foreground border border-border dark:bg-slate-800 dark:border-slate-700">
         <DialogHeader>
           <DialogTitle className="text-foreground dark:text-white text-lg sm:text-xl pr-8 break-words">{task.title}</DialogTitle>
-          <div className="sr-only">Detalhes da tarefa: {task.title}</div>
+          <DialogDescription className="sr-only">Detalhes da tarefa: {task.title}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">

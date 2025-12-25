@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Users, Plus, Crown, Shield, User as UserIcon, UserX, Mail, CheckCircle, Clock, RefreshCw, Trash2, UserMinus, Eye, EyeOff, GraduationCap, UserCheck, FileText, UserCog, Edit, UserPlus, ShieldCheck } from 'lucide-react';
 import { User } from '@/types/user';
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
@@ -412,7 +412,7 @@ Esta ação NÃO excluirá a conta dele no sistema da Rockfeller, mas ele não p
                 <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto bg-card text-foreground border border-border dark:bg-slate-800 dark:border-slate-700">
                   <DialogHeader>
                     <DialogTitle className="text-foreground dark:text-white">Criar Novo Usuário</DialogTitle>
-                    <div className="sr-only">Preencha os dados abaixo para criar um novo usuário no sistema.</div>
+                    <DialogDescription className="sr-only">Preencha os dados abaixo para criar um novo usuário no sistema.</DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4">
                     <div>
@@ -614,7 +614,7 @@ Esta ação NÃO excluirá a conta dele no sistema da Rockfeller, mas ele não p
         <DialogContent className="bg-slate-800 border-slate-700 max-w-md max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-white">Editar Usuário</DialogTitle>
-            <div className="sr-only">Altere os dados do usuário abaixo.</div>
+            <DialogDescription className="sr-only">Altere os dados do usuário abaixo.</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>

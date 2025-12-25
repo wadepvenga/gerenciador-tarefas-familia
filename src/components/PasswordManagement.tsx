@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -93,7 +93,7 @@ const PasswordManagement: React.FC<PasswordManagementProps> = ({ userId, userNam
           <DialogTitle className="text-white">
             Alterar Senha - {userName}
           </DialogTitle>
-          <div className="sr-only">Preencha os campos abaixo para alterar a senha do usuário.</div>
+          <DialogDescription className="sr-only">Preencha os campos abaixo para alterar a senha do usuário.</DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <div>
