@@ -93,6 +93,7 @@ const PasswordManagement: React.FC<PasswordManagementProps> = ({ userId, userNam
           <DialogTitle className="text-white">
             Alterar Senha - {userName}
           </DialogTitle>
+          <div className="sr-only">Preencha os campos abaixo para alterar a senha do usuário.</div>
         </DialogHeader>
         <div className="space-y-4">
           <div>
@@ -123,7 +124,7 @@ const PasswordManagement: React.FC<PasswordManagementProps> = ({ userId, userNam
               </Button>
             </div>
           </div>
-          
+
           <div>
             <Label htmlFor="confirmPassword" className="text-slate-300">
               Confirmar Senha
@@ -137,7 +138,7 @@ const PasswordManagement: React.FC<PasswordManagementProps> = ({ userId, userNam
               placeholder="Confirme a nova senha"
             />
           </div>
-          
+
           <div className="flex space-x-2">
             <Button
               onClick={handleChangePassword}
