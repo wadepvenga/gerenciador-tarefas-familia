@@ -1,11 +1,11 @@
 // Constantes da aplicação
-export const APP_NAME = "Gerenciador de Tarefas Rockfeller Navegantes";
-export const APP_SHORT_NAME = "GTR Navegantes";
-export const APP_DESCRIPTION = "Sistema de gerenciamento de tarefas para a Rockfeller Navegantes";
+export const APP_NAME = "Gerenciador de Tarefas da Família Venga";
+export const APP_SHORT_NAME = "Família Venga";
+export const APP_DESCRIPTION = "Sistema de gerenciamento de tarefas exclusivo para a Família Venga";
 
-// Informações de email
-export const EMAIL_SENDER = "navegantes@rockfellerbrasil.com.br";
-export const EMAIL_SENDER_NAME = "Rockfeller Navegantes";
+// Informações de email (Personalizado para Família)
+export const EMAIL_SENDER = "familia@venga.com.br";
+export const EMAIL_SENDER_NAME = "Família Venga";
 
 // URLs da aplicação
 export const APP_URL = window.location.origin;
@@ -28,7 +28,7 @@ export const PASSWORD_CONFIG = {
   REQUIRE_NUMBER: true,
   REQUIRE_SPECIAL: true,
   TEMP_PASSWORD_LENGTH: 16,
-}; 
+};
 
 // Configurações do EmailJS
 export const EMAILJS_CONFIG = {

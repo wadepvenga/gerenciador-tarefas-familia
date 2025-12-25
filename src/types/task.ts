@@ -14,6 +14,7 @@ export interface Task {
   is_private: boolean;
   edited_by?: string;
   edited_at?: Date;
+  family_id: string;
 }
 
 export interface NewTask {

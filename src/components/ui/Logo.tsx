@@ -6,99 +6,52 @@ interface LogoProps {
   variant?: 'full' | 'icon' | 'text';
 }
 
-const Logo: React.FC<LogoProps> = ({ 
-  className = '', 
-  size = 'md', 
-  variant = 'full' 
+const Logo: React.FC<LogoProps> = ({
+  className = '',
+  size = 'md',
+  variant = 'full'
 }) => {
-  // Tamanhos aumentados em 200% + novo tamanho xs + novo tamanho xl (300% maior)
   const sizeClasses = {
-    xs: 'w-12 h-12 text-xs',    // novo tamanho extra pequeno
-    sm: 'w-16 h-16 text-sm',    // era w-8 h-8
-    md: 'w-24 h-24 text-base',  // era w-12 h-12
-    lg: 'w-32 h-32 text-lg',    // era w-16 h-16
-    xl: 'w-64 h-64 text-2xl'    // novo tamanho extra grande (300% maior)
+    xs: 'w-10 h-10 text-xs',
+    sm: 'w-16 h-16 text-sm',
+    md: 'w-24 h-24 text-base',
+    lg: 'w-32 h-32 text-lg',
+    xl: 'w-48 h-48 text-2xl'
   };
 
   const textSizeClasses = {
-    xs: 'text-xs',   // novo tamanho extra pequeno
-    sm: 'text-sm',   // era text-xs
-    md: 'text-lg',   // era text-sm
-    lg: 'text-xl',   // era text-base
-    xl: 'text-4xl'   // novo tamanho extra grande
+    xs: 'text-sm',
+    sm: 'text-lg',
+    md: 'text-2xl',
+    lg: 'text-3xl',
+    xl: 'text-5xl'
   };
 
-  // Usando logo da pasta public (mais confiável)
-  const rockfellerLogoUrl = '/rockfeller-logo.png';
-  console.log('🏢 Logo da Rockfeller URL (300% maior):', rockfellerLogoUrl);
-  console.log('🔄 Componente Logo carregado em:', new Date().toLocaleTimeString());
+  // ✅ NOVO DESIGN: Ícone estilizado "FV" (Família Venga)
+  // Removida a logo da Rockfeller conforme solicitado
+  const renderIcon = () => (
+    <div className={`rounded-full bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center shadow-lg border-2 border-white/20 ${sizeClasses[size]} ${className}`}>
+      <span className="text-white font-black tracking-tighter">FV</span>
+    </div>
+  );
 
-  // ✅ LOGO REAL DA ROCKFELLER IMPLEMENTADA! [300% MAIOR]
-  if (variant === 'icon' || variant === 'full') {
-    return (
-      <div className={`${sizeClasses[size]} ${className}`} data-logo="rockfeller-public-300">
-        <img 
-          src={rockfellerLogoUrl} 
-          alt="Rockfeller Logo" 
-          className="w-full h-full object-contain"
-          onError={(e) => {
-            console.error('❌ Erro ao carregar logo da Rockfeller:', e);
-            console.log('🔧 Aplicando fallback...');
-            // Fallback para o design anterior se a imagem não carregar
-            (e.target as HTMLImageElement).style.display = 'none';
-            (e.target as HTMLImageElement).parentElement!.innerHTML = `
-              <div class="w-full h-full bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-600 rounded-xl flex items-center justify-center shadow-lg border border-blue-500/20">
-                <div class="text-white font-bold tracking-tight">
-                  <span class="text-yellow-300 text-2xl">R</span>
-                  <span class="text-white text-lg">F</span>
-                </div>
-              </div>
-            `;
-          }}
-          onLoad={() => {
-            console.log('✅ Logo da Rockfeller carregada com sucesso! (300% maior)');
-          }}
-        />
-      </div>
-    );
+  if (variant === 'icon') {
+    return renderIcon();
   }
 
   if (variant === 'text') {
     return (
-      <div className={`${textSizeClasses[size]} font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 ${className}`}>
-        ROCKFELLER
+      <div className={`${textSizeClasses[size]} font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400 ${className}`}>
+        FAMÍLIA VENGA
       </div>
     );
   }
 
   return (
-    <div className={`flex items-center space-x-3 ${className}`} data-logo="rockfeller-full-public-200">
-      <div className={`${sizeClasses[size]}`}>
-        <img 
-          src={rockfellerLogoUrl} 
-          alt="Rockfeller Logo" 
-          className="w-full h-full object-contain"
-          onError={(e) => {
-            console.error('❌ Erro ao carregar logo da Rockfeller:', e);
-            console.log('🔧 Aplicando fallback...');
-            // Fallback para o design anterior se a imagem não carregar
-            (e.target as HTMLImageElement).style.display = 'none';
-            (e.target as HTMLImageElement).parentElement!.innerHTML = `
-              <div class="w-full h-full bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-600 rounded-xl flex items-center justify-center shadow-lg border border-blue-500/20">
-                <div class="text-white font-bold tracking-tight">
-                  <span class="text-yellow-300 text-2xl">R</span>
-                  <span class="text-white text-lg">F</span>
-                </div>
-              </div>
-            `;
-          }}
-          onLoad={() => {
-            console.log('✅ Logo da Rockfeller carregada com sucesso! (200% maior)');
-          }}
-        />
-      </div>
-      <div className={`${textSizeClasses[size]} font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400`}>
-        ROCKFELLER
+    <div className={`flex flex-col items-center justify-center space-y-4 ${className}`}>
+      {renderIcon()}
+      <div className={`${textSizeClasses[size]} font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400 text-center leading-none`}>
+        FAMÍLIA<br />VENGA
       </div>
     </div>
   );

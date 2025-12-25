@@ -73,13 +73,13 @@ export const useTaskManager = () => {
   const [selectedAccessLevel, setSelectedAccessLevel] = useState<string>('all');
   const [selectedPriority, setSelectedPriority] = useState<'all' | 'baixa' | 'media' | 'urgente'>('all');
   const [selectedStatus, setSelectedStatus] = useState<'all' | 'pendente' | 'em_andamento' | 'concluida' | 'cancelada'>('all');
-  
+
   // 🚀 SISTEMA SIMPLIFICADO: Estados mínimos necessários
   const [lastUpdateTime, setLastUpdateTime] = useState(Date.now());
 
   const { currentUser } = useSupabaseAuth();
   const { toast } = useToast();
-  
+
   // Refs para controle de timers e race conditions
   const isLoadingRef = useRef(false);
   const refreshIntervalRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -120,7 +120,7 @@ export const useTaskManager = () => {
     if (refreshIntervalRef.current) {
       clearTimeout(refreshIntervalRef.current);
     }
-    
+
     refreshIntervalRef.current = setTimeout(() => {
       console.log('🔄 Verificação tarefas (1 minuto)...');
       loadTasks(); // Carregamento simples e direto
@@ -150,7 +150,8 @@ export const useTaskManager = () => {
       completed_at: taskData.completed_at ? new Date(taskData.completed_at) : undefined,
       is_private: taskData.is_private ?? false,
       edited_by: taskData.edited_by || undefined,
-      edited_at: taskData.edited_at ? new Date(taskData.edited_at) : undefined
+      edited_at: taskData.edited_at ? new Date(taskData.edited_at) : undefined,
+      family_id: taskData.family_id
     };
   }, []);
 
@@ -243,16 +244,23 @@ export const useTaskManager = () => {
       console.log('loadTasks já em progresso, ignorando...');
       return;
     }
-    
+
     setIsLoading(true);
     isLoadingRef.current = true;
-    
+
     try {
-      console.log('🔍 Carregando todas as tarefas...');
-      
-      const { data: taskData, error: taskError } = await supabase
-        .from('tasks')
-        .select('*')
+      console.log('🔍 Carregando tarefas do núcleo:', currentUser?.family_id);
+
+      let query = supabase
+        .from('tasks_familia')
+        .select('*');
+
+      // ✅ ISOLAÇÃO: Filtrar por núcleo (exceto se admin global, mas por enquanto todos filtram)
+      if (currentUser?.family_id) {
+        query = query.eq('family_id', currentUser.family_id);
+      }
+
+      const { data: taskData, error: taskError } = await query
         .order('created_at', { ascending: false });
 
       if (taskError) {
@@ -341,7 +349,7 @@ export const useTaskManager = () => {
 
     // Filtro por usuário (apenas tarefas atribuídas)
     if (selectedUser !== 'all') {
-      filtered = filtered.filter(task => 
+      filtered = filtered.filter(task =>
         task.assigned_users.includes(selectedUser)
       );
     }
@@ -350,13 +358,14 @@ export const useTaskManager = () => {
     if (selectedAccessLevel !== 'all') {
       try {
         const { data: userProfiles } = await supabase
-          .from('user_profiles')
+          .from('user_profiles_familia')
           .select('user_id, role')
-          .eq('role', selectedAccessLevel);
+          .eq('role', selectedAccessLevel)
+          .eq('family_id', currentUser?.family_id);
 
         if (userProfiles) {
           const userIds = userProfiles.map(profile => profile.user_id);
-          filtered = filtered.filter(task => 
+          filtered = filtered.filter(task =>
             task.assigned_users.some(userId => userIds.includes(userId))
           );
         }
@@ -455,7 +464,7 @@ export const useTaskManager = () => {
     setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: newStatus, updated_at: new Date() as any } : t));
     try {
       const task = tasks.find(t => t.id === taskId);
-      
+
       const updateData: any = {
         status: newStatus,
         updated_at: new Date().toISOString()
@@ -468,7 +477,7 @@ export const useTaskManager = () => {
       }
 
       const { error } = await supabase
-        .from('tasks')
+        .from('tasks_familia')
         .update(updateData)
         .eq('id', taskId);
 
@@ -520,11 +529,11 @@ export const useTaskManager = () => {
 
   const canEditTask = (task: Task): boolean => {
     if (!currentUser) return false;
-    
+
     if (task.created_by === currentUser.user_id) return true;
     if (task.assigned_users.includes(currentUser.user_id)) return true;
     if (['admin', 'franqueado'].includes(currentUser.role)) return true;
-    
+
     return false;
   };
 
@@ -534,14 +543,14 @@ export const useTaskManager = () => {
    */
   const canEditTaskFull = (task: Task): boolean => {
     if (!currentUser) return false;
-    
+
     // Admin, franqueado e supervisor podem editar qualquer tarefa
     if (['admin', 'franqueado', 'supervisor_adm'].includes(currentUser.role)) return true;
-    
+
     // Outros usuários só podem editar suas próprias tarefas ou tarefas atribuídas
     if (task.created_by === currentUser.user_id) return true;
     if (task.assigned_users.includes(currentUser.user_id)) return true;
-    
+
     return false;
   };
 
@@ -595,17 +604,17 @@ export const useTaskManager = () => {
       let formattedDueDate = null;
       if (updatedTask.due_date) {
         let dateOnly = updatedTask.due_date;
-        
+
         // Se contém espaço, pega apenas a parte da data
         if (dateOnly.includes(' ')) {
           dateOnly = dateOnly.split(' ')[0];
         }
-        
+
         // Se contém T (ISO), pega apenas a parte da data
         if (dateOnly.includes('T')) {
           dateOnly = dateOnly.split('T')[0];
         }
-        
+
         // Extrair componentes da hora da string original
         let time = '09:00';
         if (updatedTask.due_date.includes(' ')) {
@@ -614,7 +623,7 @@ export const useTaskManager = () => {
             time = timePart.substring(0, 5); // HH:MM
           }
         }
-        
+
         // Incluir timezone do Brasil (-03:00) explicitamente
         formattedDueDate = `${dateOnly} ${time}:00-03:00`;
       }
@@ -628,9 +637,9 @@ export const useTaskManager = () => {
         assigned_users: updatedTask.assigned_users,
         is_private: updatedTask.is_private
       };
-      
+
       const { error } = await supabase
-        .from('tasks')
+        .from('tasks_familia')
         .update(updateData)
         .eq('id', taskId);
 
@@ -710,20 +719,20 @@ export const useTaskManager = () => {
       if (newTask.due_date) {
         // Extrair apenas a parte da data (YYYY-MM-DD)
         let dateOnly = newTask.due_date;
-        
+
         // Se contém espaço, pega apenas a parte da data
         if (dateOnly.includes(' ')) {
           dateOnly = dateOnly.split(' ')[0];
         }
-        
+
         // Se contém T (ISO), pega apenas a parte da data
         if (dateOnly.includes('T')) {
           dateOnly = dateOnly.split('T')[0];
         }
-        
+
         // Extrair componentes da hora
         const time = newTask.due_time || '09:00';
-        
+
         // SOLUÇÃO DEFINITIVA: Incluir timezone do Brasil (-03:00) explicitamente
         // Isso evita que o PostgreSQL interprete a data como UTC e cause conversões
         // automáticas que resultavam em tarefas sendo salvas na data errada
@@ -741,11 +750,12 @@ export const useTaskManager = () => {
         due_date: formattedDueDate,
         assigned_users: newTask.assigned_users,
         created_by: currentUser.user_id,
-        is_private: newTask.is_private
+        is_private: newTask.is_private,
+        family_id: currentUser.family_id // ✅ Vínculo automático com o núcleo do criador
       };
-      
+
       const { data, error } = await supabase
-        .from('tasks')
+        .from('tasks_familia')
         .insert(insertData)
         .select('*');
 
@@ -804,7 +814,7 @@ export const useTaskManager = () => {
       setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
 
       const { error } = await supabase
-        .from('tasks')
+        .from('tasks_familia')
         .delete()
         .eq('id', taskId);
 
@@ -842,7 +852,7 @@ export const useTaskManager = () => {
 
   const canDeleteTask = (task: Task): boolean => {
     if (!currentUser) return false;
-    
+
     // Apenas admin, franqueado, coordenador e supervisor_adm podem excluir
     return ['admin', 'franqueado', 'coordenador', 'supervisor_adm'].includes(currentUser.role);
   };
