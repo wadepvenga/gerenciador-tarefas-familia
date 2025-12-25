@@ -506,7 +506,7 @@ Esta ação NÃO excluirá a conta dele no sistema da Rockfeller, mas ele não p
 
         <CardContent>
           <div className="space-y-3">
-            {(confirmedUsers || []).map(user => (
+            {(Array.isArray(confirmedUsers) ? confirmedUsers : []).map(user => (
               <div key={user.id} className={`flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 rounded-lg border gap-4 ${user.is_active === false
                 ? 'bg-red-500/10 border-red-500/30'
                 : 'bg-muted/40 border-border dark:bg-slate-700/30 dark:border-slate-600'
