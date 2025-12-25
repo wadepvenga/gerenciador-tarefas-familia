@@ -49,11 +49,12 @@ const UserHeader: React.FC = () => {
 
   return (
     <Card className="mb-6 border bg-card backdrop-blur-md shadow-xl dark:bg-slate-900/40 dark:border-slate-800">
-      <CardContent className="p-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex items-center space-x-4">
+      <CardContent className="p-3 md:p-4">
+        <div className="flex items-center justify-between gap-2 md:gap-4">
+          {/* Logo and Title - Hidden text on mobile */}
+          <div className="flex items-center space-x-2 md:space-x-4">
             <Logo size="xs" variant="icon" />
-            <div>
+            <div className="hidden md:block">
               <h1 className="text-2xl font-black text-foreground tracking-tighter">
                 FAMÍLIA VENGA
               </h1>
@@ -63,8 +64,9 @@ const UserHeader: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center space-x-3">
-            <span className="hidden sm:block font-medium text-primary-foreground dark:text-white max-w-[220px] truncate">
+          {/* Action Buttons - Compact on mobile */}
+          <div className="flex items-center gap-2 md:gap-3">
+            <span className="hidden md:block font-medium text-primary-foreground dark:text-white max-w-[220px] truncate">
               {currentUser.name}
             </span>
             <ThemeToggle />
@@ -74,10 +76,10 @@ const UserHeader: React.FC = () => {
               variant="outline"
               size="sm"
               onClick={logout}
-              className="bg-white/10 border-white/20 text-primary-foreground hover:bg-white/20 dark:bg-slate-700/50 dark:border-slate-600 dark:hover:bg-slate-600/50 dark:text-white w-full sm:w-auto"
+              className="bg-white/10 border-white/20 text-primary-foreground hover:bg-white/20 dark:bg-slate-700/50 dark:border-slate-600 dark:hover:bg-slate-600/50 dark:text-white min-h-[44px]"
             >
-              <LogOut className="w-4 h-4 mr-2" />
-              Sair
+              <LogOut className="w-4 h-4 md:mr-2" />
+              <span className="hidden md:inline">Sair</span>
             </Button>
           </div>
         </div>
