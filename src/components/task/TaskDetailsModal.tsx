@@ -226,6 +226,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-card text-foreground border border-border dark:bg-slate-800 dark:border-slate-700">
         <DialogHeader>
           <DialogTitle className="text-foreground dark:text-white text-lg sm:text-xl pr-8 break-words">{task.title}</DialogTitle>
+          <div className="sr-only">Detalhes da tarefa: {task.title}</div>
         </DialogHeader>
 
         <div className="space-y-6">

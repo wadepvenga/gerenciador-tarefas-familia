@@ -57,17 +57,17 @@ const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
    */
   const extractDateForInput = (dateString: string): string => {
     if (!dateString) return '';
-    
+
     // Se contém espaço (formato: "YYYY-MM-DD HH:MM:SS")
     if (dateString.includes(' ')) {
       return dateString.split(' ')[0];
     }
-    
+
     // Se contém T (formato ISO: "YYYY-MM-DDTHH:MM:SS")
     if (dateString.includes('T')) {
       return dateString.split('T')[0];
     }
-    
+
     // Se já está no formato de data (YYYY-MM-DD)
     return dateString;
   };
@@ -80,25 +80,25 @@ const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
    */
   const extractTimeForInput = (dateString: string): string => {
     if (!dateString) return '09:00';
-    
+
     let timePart = '';
-    
+
     // Se contém espaço (formato: "YYYY-MM-DD HH:MM:SS")
     if (dateString.includes(' ')) {
       timePart = dateString.split(' ')[1];
     }
-    
+
     // Se contém T (formato ISO: "YYYY-MM-DDTHH:MM:SS")
     if (dateString.includes('T')) {
       timePart = dateString.split('T')[1];
     }
-    
+
     // Extrair apenas HH:MM
     if (timePart && timePart.includes(':')) {
       const timeParts = timePart.split(':');
       return `${timeParts[0]}:${timeParts[1]}`;
     }
-    
+
     return '09:00';
   };
 
@@ -120,17 +120,17 @@ const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
       const day = String(today.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
     }
-    
+
     // Se contém espaço (formato: "YYYY-MM-DD HH:MM:SS")
     if (dateString.includes(' ')) {
       return dateString.split(' ')[0];
     }
-    
+
     // Se contém T (formato ISO: "YYYY-MM-DDTHH:MM:SS")
     if (dateString.includes('T')) {
       return dateString.split('T')[0];
     }
-    
+
     // Se já está no formato de data (YYYY-MM-DD)
     return dateString;
   };
@@ -140,6 +140,7 @@ const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
       <DialogContent className="bg-slate-800 border-slate-700 max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-white">Editar Tarefa</DialogTitle>
+          <div className="sr-only">Edite os detalhes da tarefa abaixo.</div>
         </DialogHeader>
         <div className="space-y-4">
           <div>
@@ -152,7 +153,7 @@ const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
               placeholder="Título da tarefa"
             />
           </div>
-          
+
           <div>
             <Label htmlFor="editTaskDescription" className="text-slate-300">Descrição</Label>
             <Textarea
@@ -180,7 +181,7 @@ const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div>
               <Label htmlFor="editTaskPriority" className="text-slate-300">Prioridade</Label>
               <Select value={editTask.priority} onValueChange={(value: any) => onTaskChange({ ...editTask, priority: value })}>
@@ -221,7 +222,7 @@ const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
                 onChange={(e) => {
                   const dateValue = e.target.value;
                   const timeValue = editTask.due_time || '09:00';
-                  
+
                   if (dateValue) {
                     // Combina data e hora mantendo formato local
                     // Formato: "YYYY-MM-DD HH:MM:SS" (será convertido para timezone no useTaskManager)
@@ -235,7 +236,7 @@ const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
                 disabled={!canEditTaskDueDate}
               />
             </div>
-            
+
             <div>
               <Label htmlFor="editTaskDueTime" className="text-slate-300">Horário</Label>
               {/* 
@@ -260,7 +261,7 @@ const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
                 onChange={(e) => {
                   const timeValue = e.target.value;
                   const dateValue = extractDatePart(editTask.due_date);
-                  
+
                   // Combina data e hora mantendo formato local
                   // Formato: "YYYY-MM-DD HH:MM:SS" (será convertido para timezone no useTaskManager)
                   const localDateTime = `${dateValue} ${timeValue}:00`;
@@ -322,9 +323,9 @@ const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
               className="data-[state=checked]:bg-amber-500"
             />
           </div>
-          
+
           <div className="flex space-x-2">
-            <Button 
+            <Button
               onClick={onSaveTask}
               className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
               disabled={isSaving}
@@ -336,8 +337,8 @@ const EditTaskDialog: React.FC<EditTaskDialogProps> = ({
               )}
               {isSaving ? 'Salvando...' : 'Salvar Alterações'}
             </Button>
-            
-            <Button 
+
+            <Button
               variant="outline"
               onClick={() => onOpenChange(false)}
               className="border-slate-600 text-slate-300 hover:bg-slate-700"

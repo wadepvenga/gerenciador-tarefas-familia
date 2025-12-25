@@ -48,17 +48,17 @@ const CreateTaskDialog: React.FC<CreateTaskDialogProps> = ({
    */
   const extractDateForInput = (dateString: string): string => {
     if (!dateString) return '';
-    
+
     // Se contém espaço (formato: "YYYY-MM-DD HH:MM:SS")
     if (dateString.includes(' ')) {
       return dateString.split(' ')[0];
     }
-    
+
     // Se contém T (formato ISO: "YYYY-MM-DDTHH:MM:SS")
     if (dateString.includes('T')) {
       return dateString.split('T')[0];
     }
-    
+
     // Se já está no formato de data (YYYY-MM-DD)
     return dateString;
   };
@@ -81,17 +81,17 @@ const CreateTaskDialog: React.FC<CreateTaskDialogProps> = ({
       const day = String(today.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
     }
-    
+
     // Se contém espaço (formato: "YYYY-MM-DD HH:MM:SS")
     if (dateString.includes(' ')) {
       return dateString.split(' ')[0];
     }
-    
+
     // Se contém T (formato ISO: "YYYY-MM-DDTHH:MM:SS")
     if (dateString.includes('T')) {
       return dateString.split('T')[0];
     }
-    
+
     // Se já está no formato de data (YYYY-MM-DD)
     return dateString;
   };
@@ -107,6 +107,7 @@ const CreateTaskDialog: React.FC<CreateTaskDialogProps> = ({
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto bg-card text-foreground border border-border dark:bg-slate-800 dark:border-slate-700">
         <DialogHeader>
           <DialogTitle className="text-foreground dark:text-white">Criar Nova Tarefa</DialogTitle>
+          <div className="sr-only">Preencha os dados abaixo para criar uma nova tarefa.</div>
         </DialogHeader>
         <div className="space-y-4">
           <div>
@@ -119,7 +120,7 @@ const CreateTaskDialog: React.FC<CreateTaskDialogProps> = ({
               placeholder="Título da tarefa"
             />
           </div>
-          
+
           <div>
             <Label htmlFor="taskDescription" className="text-muted-foreground dark:text-slate-300">Descrição</Label>
             <Textarea
@@ -147,7 +148,7 @@ const CreateTaskDialog: React.FC<CreateTaskDialogProps> = ({
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div>
               <Label htmlFor="taskPriority" className="text-muted-foreground dark:text-slate-300">Prioridade</Label>
               <Select value={newTask.priority} onValueChange={(value: any) => onTaskChange({ ...newTask, priority: value })}>
@@ -173,7 +174,7 @@ const CreateTaskDialog: React.FC<CreateTaskDialogProps> = ({
                 onChange={(e) => {
                   const dateValue = e.target.value;
                   const timeValue = newTask.due_time || '09:00';
-                  
+
                   if (dateValue) {
                     // Combina data e hora mantendo formato local
                     // Formato: "YYYY-MM-DD HH:MM:SS" (será convertido para timezone no useTaskManager)
@@ -186,7 +187,7 @@ const CreateTaskDialog: React.FC<CreateTaskDialogProps> = ({
                 className="bg-muted border-border text-foreground dark:bg-slate-700/50 dark:border-slate-600 dark:text-white"
               />
             </div>
-            
+
             <div>
               <Label htmlFor="taskDueTime" className="text-muted-foreground dark:text-slate-300">Horário</Label>
               <Input
@@ -196,7 +197,7 @@ const CreateTaskDialog: React.FC<CreateTaskDialogProps> = ({
                 onChange={(e) => {
                   const timeValue = e.target.value;
                   const dateValue = extractDatePart(newTask.due_date);
-                  
+
                   // Combina data e hora mantendo formato local
                   // Formato: "YYYY-MM-DD HH:MM:SS" (será convertido para timezone no useTaskManager)
                   const localDateTime = `${dateValue} ${timeValue}:00`;
@@ -231,8 +232,8 @@ const CreateTaskDialog: React.FC<CreateTaskDialogProps> = ({
               className="data-[state=checked]:bg-amber-500"
             />
           </div>
-          
-          <Button 
+
+          <Button
             onClick={onCreateTask}
             className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
             disabled={isCreating}

@@ -412,6 +412,7 @@ Esta ação NÃO excluirá a conta dele no sistema da Rockfeller, mas ele não p
                 <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto bg-card text-foreground border border-border dark:bg-slate-800 dark:border-slate-700">
                   <DialogHeader>
                     <DialogTitle className="text-foreground dark:text-white">Criar Novo Usuário</DialogTitle>
+                    <div className="sr-only">Preencha os dados abaixo para criar um novo usuário no sistema.</div>
                   </DialogHeader>
                   <div className="space-y-4">
                     <div>
@@ -613,6 +614,7 @@ Esta ação NÃO excluirá a conta dele no sistema da Rockfeller, mas ele não p
         <DialogContent className="bg-slate-800 border-slate-700 max-w-md max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-white">Editar Usuário</DialogTitle>
+            <div className="sr-only">Altere os dados do usuário abaixo.</div>
           </DialogHeader>
           <div className="space-y-4">
             <div>
