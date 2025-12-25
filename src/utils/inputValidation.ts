@@ -9,19 +9,19 @@ export const validatePassword = (password: string): { isValid: boolean; message?
   if (password.length < 8) {
     return { isValid: false, message: 'A senha deve ter pelo menos 8 caracteres' };
   }
-  
+
   if (!/[A-Z]/.test(password)) {
     return { isValid: false, message: 'A senha deve conter pelo menos uma letra maiúscula' };
   }
-  
+
   if (!/[a-z]/.test(password)) {
     return { isValid: false, message: 'A senha deve conter pelo menos uma letra minúscula' };
   }
-  
+
   if (!/[0-9]/.test(password)) {
     return { isValid: false, message: 'A senha deve conter pelo menos um número' };
   }
-  
+
   return { isValid: true };
 };
 
@@ -36,14 +36,20 @@ export const validateName = (name: string): boolean => {
 };
 
 export const generateSecurePassword = (): string => {
-  const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
-  const array = new Uint8Array(16);
+  // 🛡️ HUMAN-FRIENDLY CHARSET: Removendo caracteres ambíguos (O, 0, I, l, 1, etc) para facilitar digitação
+  const charset = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%&*';
+  const array = new Uint8Array(12); // Reduzido para 12 caracteres (mais fácil de digitar, ainda seguro)
   crypto.getRandomValues(array);
-  
+
   let password = '';
   for (let i = 0; i < array.length; i++) {
     password += charset[array[i] % charset.length];
   }
-  
+
+  // Garantir que a senha atenda aos requisitos básicos (Maiúscula, Minúscula, Número)
+  if (!/[A-Z]/.test(password)) password += 'V';
+  if (!/[a-z]/.test(password)) password += 'e';
+  if (!/[0-9]/.test(password)) password += '4';
+
   return password;
 };

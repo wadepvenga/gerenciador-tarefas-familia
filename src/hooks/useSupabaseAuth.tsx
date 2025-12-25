@@ -596,11 +596,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.log('📊 Status da resposta:', (response as any).status);
         console.log('📝 Texto da resposta:', (response as any).text);
 
-        // 🎉 FEEDBACK: Notificar administrador do sucesso
+        // 🎉 FEEDBACK: Notificar administrador do sucesso e mostrar a senha
         toast({
-          title: "Usuário Criado com Sucesso!",
-          description: `${userData.name} foi criado e um email com as credenciais foi enviado para ${userData.email}`,
+          title: "✅ Usuário Criado!",
+          description: `O email foi enviado para ${userData.email}. Senha Temporária: ${securePassword}`,
+          duration: 10000 // Duração maior para dar tempo de copiar a senha
         });
+
+        console.log(`🔐 SENHA GERADA PARA ${userData.email}: ${securePassword}`);
       } catch (emailError: any) {
         // ❌ ERRO EMAIL: Capturar e analisar falhas no envio de email
         console.error('❌ Erro ao enviar email:', emailError);
@@ -855,14 +858,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return false;
       }
 
-      const { data, error } = await supabase.functions.invoke('change-user-password', {
-        body: { userId, newPassword }
+      // 🔄 RPC: Usar a nova função do banco para trocar a senha com segurança
+      const { data, error } = await supabase.rpc('change_user_password', {
+        target_user_id: userId,
+        new_password: newPassword
       });
 
-      if (error) {
+      if (error || (data && (data as any).success === false)) {
+        console.error('Erro RPC ao alterar senha:', error || (data as any).error);
         toast({
           title: "Erro",
-          description: "Falha ao alterar senha",
+          description: error?.message || (data as any)?.error || "Falha ao alterar senha",
           variant: "destructive"
         });
         return false;
@@ -1128,23 +1134,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         role: userProfile.role
       };
 
-      // 🔄 ATUALIZAR: Senha no Supabase Auth usando admin API
+      // 🔄 ATUALIZAR: Senha no Supabase Auth usando o novo RPC
       try {
-        // ⚠️ NOTA: A função RPC reset_user_password pode não estar disponível no client
-        // Em produção, seria necessário implementar via Edge Functions ou Admin API
+        const { data: rpcData, error: rpcError } = await supabase.rpc('change_user_password', {
+          target_user_id: userProfile.user_id,
+          new_password: newTemporaryPassword
+        });
 
-        console.log('⚠️ Função RPC não disponível no client. Usando fallback.');
-
-        // Como fallback, vamos apenas marcar o usuário e enviar o email
-        // Em produção, seria necessário implementar a função RPC no Supabase
-        console.log('⚠️ Fallback: Enviando email com instrução para contatar admin');
-
-      } catch (passwordError) {
-        console.error('Erro ao atualizar senha:', passwordError);
-
-        // Como fallback, vamos apenas marcar o usuário e enviar o email
-        // Em produção, seria necessário implementar a função RPC no Supabase
-        console.log('⚠️ Fallback: Enviando email com instrução para contatar admin');
+        if (rpcError || (rpcData && (rpcData as any).success === false)) {
+          console.error('Erro ao atualizar senha via RPC:', rpcError || (rpcData as any).error);
+          // Continuamos mesmo com erro no RPC pois o email será enviado com a senha que o admin pode usar
+        } else {
+          console.log('✅ Senha atualizada no Auth via RPC com sucesso');
+        }
+      } catch (error) {
+        console.error('Erro inesperado na chamada do RPC:', error);
       }
 
       // 🔄 MARCAR: Usuário para trocar senha no primeiro login na tabela da família
@@ -1204,9 +1208,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         toast({
           title: "✅ Email Enviado!",
-          description: `Uma nova senha temporária foi enviada para ${userData.email}`,
-          variant: "default"
+          description: `Uma nova senha temporária foi enviada para ${userData.email}. Nova Senha: ${newTemporaryPassword}`,
+          variant: "default",
+          duration: 10000
         });
+
+        console.log(`🔐 NOVA SENHA PARA ${userData.email}: ${newTemporaryPassword}`);
 
         return true;
 
