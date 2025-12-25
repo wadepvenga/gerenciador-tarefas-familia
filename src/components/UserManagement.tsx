@@ -120,6 +120,10 @@ const UserManagement: React.FC = () => {
       case 'franqueado': return 'bg-blue-500/20 text-blue-400';
       case 'pai': return 'bg-indigo-500/20 text-indigo-400';
       case 'mae': return 'bg-pink-500/20 text-pink-400';
+      case 'esposo': return 'bg-indigo-500/20 text-indigo-400';
+      case 'esposa': return 'bg-pink-500/20 text-pink-400';
+      case 'avo_homem': return 'bg-amber-500/20 text-amber-400';
+      case 'avo_mulher': return 'bg-orange-500/20 text-orange-400';
       case 'filho': return 'bg-green-500/20 text-green-400';
       case 'filha': return 'bg-purple-500/20 text-purple-400';
       case 'outro': return 'bg-gray-500/20 text-gray-400';
@@ -137,6 +141,14 @@ const UserManagement: React.FC = () => {
         return <Badge className="bg-indigo-600 hover:bg-indigo-700">Pai</Badge>;
       case 'mae':
         return <Badge className="bg-pink-500 hover:bg-pink-600">Mãe</Badge>;
+      case 'esposo':
+        return <Badge className="bg-indigo-600 hover:bg-indigo-700">Esposo</Badge>;
+      case 'esposa':
+        return <Badge className="bg-pink-500 hover:bg-pink-600">Esposa</Badge>;
+      case 'avo_homem':
+        return <Badge className="bg-amber-600 hover:bg-amber-700">Avô</Badge>;
+      case 'avo_mulher':
+        return <Badge className="bg-orange-600 hover:bg-orange-700">Avó</Badge>;
       case 'filho':
         return <Badge className="bg-green-500 hover:bg-green-600">Filho</Badge>;
       case 'filha':
@@ -153,6 +165,10 @@ const UserManagement: React.FC = () => {
       { value: 'admin', label: 'Administrador / Responsável' },
       { value: 'pai', label: 'Pai' },
       { value: 'mae', label: 'Mãe' },
+      { value: 'esposo', label: 'Esposo' },
+      { value: 'esposa', label: 'Esposa' },
+      { value: 'avo_homem', label: 'Avô' },
+      { value: 'avo_mulher', label: 'Avó' },
       { value: 'filho', label: 'Filho' },
       { value: 'filha', label: 'Filha' },
       { value: 'outro', label: 'Outro Familiar' },
@@ -165,6 +181,10 @@ const UserManagement: React.FC = () => {
       case 'franqueado': return <Shield className="w-4 h-4" />;
       case 'pai':
       case 'mae':
+      case 'esposo':
+      case 'esposa':
+      case 'avo_homem':
+      case 'avo_mulher':
         return <ShieldCheck className="w-4 h-4 text-indigo-400" />;
       case 'filho':
       case 'filha':
@@ -178,6 +198,10 @@ const UserManagement: React.FC = () => {
       case 'admin': return 'Administrador / Responsável';
       case 'pai': return 'Pai';
       case 'mae': return 'Mãe';
+      case 'esposo': return 'Esposo';
+      case 'esposa': return 'Esposa';
+      case 'avo_homem': return 'Avô';
+      case 'avo_mulher': return 'Avó';
       case 'filho': return 'Filho';
       case 'filha': return 'Filha';
       case 'outro': return 'Outro Familiar';
