@@ -62,13 +62,14 @@ const PasswordManagement: React.FC<PasswordManagementProps> = ({ userId, userNam
         setNewPassword('');
         setConfirmPassword('');
         setIsOpen(false);
-      } else {
-        throw new Error('Falha ao alterar senha');
       }
+      // Se falhar, o hook changePassword já exibiu o toast com o erro específico
     } catch (error) {
+      console.error("Erro no handler de mudança de senha:", error);
+      // Apenas mostrar toast se for um erro inesperado que escapou do hook
       toast({
         title: "Erro",
-        description: "Erro ao alterar senha",
+        description: "Erro ao processar solicitação",
         variant: "destructive"
       });
     } finally {

@@ -857,16 +857,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       // 🔄 RPC: Usar a nova função do banco para trocar a senha com segurança
+      console.log('🔄 Iniciando RPC change_user_password para usuário:', userId);
+
       const { data, error } = await supabase.rpc('change_user_password' as any, {
         target_user_id: userId,
         new_password: newPassword
       });
 
+      console.log('🔄 RPC Resposta:', { data, error });
+
       if (error || (data && (data as any).success === false)) {
-        console.error('Erro RPC ao alterar senha:', error || (data as any).error);
+        const rawError = error || (data as any).error;
+        console.error('❌ Erro RPC ao alterar senha:', rawError);
+
+        // Fallback friendly message if possible
+        let message = "Falha ao alterar senha";
+        if (typeof rawError === 'string') message = rawError;
+        else if (rawError?.message) message = rawError.message;
+        else if ((data as any)?.message) message = (data as any).message;
+
         toast({
-          title: "Erro",
-          description: error?.message || (data as any)?.error || "Falha ao alterar senha",
+          title: "Erro ao Alterar Senha",
+          description: message,
           variant: "destructive"
         });
         return false;
