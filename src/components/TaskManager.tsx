@@ -836,55 +836,55 @@ const TaskManager = () => {
 
         {/* Navegação de visualização */}
         <div className="bg-card backdrop-blur-sm rounded-xl shadow-lg p-6 mb-6 border border-border">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-4">
-              <Button
-                onClick={() => navigateDate('prev')}
-                variant="outline"
-                size="sm"
-                className="border-slate-600 hover:border-slate-500"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </Button>
-              <h2 className="text-xl font-semibold text-foreground">
-                {getViewTitleBR(currentView, selectedDate)}
-              </h2>
-              <Button
-                onClick={() => navigateDate('next')}
-                variant="outline"
-                size="sm"
-                className="border-slate-600 hover:border-slate-500"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </Button>
-            </div>
+          {/* Linha 1: Navegação de Data */}
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <Button
+              onClick={() => navigateDate('prev')}
+              variant="outline"
+              size="sm"
+              className="border-slate-600 hover:border-slate-500"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </Button>
+            <h2 className="text-lg md:text-xl font-semibold text-foreground text-center min-w-[200px]">
+              {getViewTitleBR(currentView, selectedDate)}
+            </h2>
+            <Button
+              onClick={() => navigateDate('next')}
+              variant="outline"
+              size="sm"
+              className="border-slate-600 hover:border-slate-500"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          </div>
 
-            <div className="flex items-center gap-2">
-              <Button
-                onClick={() => setCurrentView('day')}
-                variant={currentView === 'day' ? 'default' : 'outline'}
-                size="sm"
-                className={currentView === 'day' ? 'bg-primary text-primary-foreground hover:opacity-90' : 'border-border'}
-              >
-                Dia
-              </Button>
-              <Button
-                onClick={() => setCurrentView('week')}
-                variant={currentView === 'week' ? 'default' : 'outline'}
-                size="sm"
-                className={currentView === 'week' ? 'bg-primary text-primary-foreground hover:opacity-90' : 'border-border'}
-              >
-                Semana
-              </Button>
-              <Button
-                onClick={() => setCurrentView('month')}
-                variant={currentView === 'month' ? 'default' : 'outline'}
-                size="sm"
-                className={currentView === 'month' ? 'bg-primary text-primary-foreground hover:opacity-90' : 'border-border'}
-              >
-                Mês
-              </Button>
-            </div>
+          {/* Linha 2: Botões de Visualização */}
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <Button
+              onClick={() => setCurrentView('day')}
+              variant={currentView === 'day' ? 'default' : 'outline'}
+              size="sm"
+              className={currentView === 'day' ? 'bg-primary text-primary-foreground hover:opacity-90' : 'border-border'}
+            >
+              Dia
+            </Button>
+            <Button
+              onClick={() => setCurrentView('week')}
+              variant={currentView === 'week' ? 'default' : 'outline'}
+              size="sm"
+              className={currentView === 'week' ? 'bg-primary text-primary-foreground hover:opacity-90' : 'border-border'}
+            >
+              Semana
+            </Button>
+            <Button
+              onClick={() => setCurrentView('month')}
+              variant={currentView === 'month' ? 'default' : 'outline'}
+              size="sm"
+              className={currentView === 'month' ? 'bg-primary text-primary-foreground hover:opacity-90' : 'border-border'}
+            >
+              Mês
+            </Button>
           </div>
 
           <TaskFilters
