@@ -73,6 +73,7 @@ const TaskManager = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isCreatingTask, setIsCreatingTask] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showFilters, setShowFilters] = useState(false); // Estado para filtros colapsáveis
 
   // 🔄 Estado para controle de refresh manual
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -634,19 +635,19 @@ const TaskManager = () => {
         {/* Header */}
         <div className="bg-card backdrop-blur-sm rounded-xl shadow-lg p-6 mb-6 border border-border dark:bg-slate-800/50 dark:border-slate-700/50">
           <div className="flex justify-between items-center mb-4">
-            <div>
+            <div className="hidden md:block">
               <p className="text-muted-foreground mt-1 dark:text-slate-400">
                 Gerencie suas tarefas de forma eficiente
               </p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 md:gap-3">
               <RealTimeStatusIndicator />
               <Button
                 onClick={handleManualRefresh}
                 disabled={isRefreshing}
                 variant="outline"
                 size="sm"
-                className="flex items-center gap-2 border-border dark:border-slate-600"
+                className="hidden md:flex items-center gap-2 border-border dark:border-slate-600"
               >
                 <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
                 Atualizar
@@ -655,16 +656,24 @@ const TaskManager = () => {
           </div>
 
           <div className="flex flex-wrap gap-3 items-center">
+            {/* Mobile: Botão de Filtros */}
             <Button
-              onClick={() => setIsCreateDialogOpen(true)}
-              disabled={isCreatingTask}
-              className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg"
+              onClick={() => setShowFilters(!showFilters)}
+              variant="outline"
+              size="sm"
+              className="md:hidden flex items-center gap-2"
             >
-              <Plus className="w-4 h-4 mr-2" />
-              {isCreatingTask ? 'Criando...' : 'Nova Tarefa'}
+              <Filter className="w-4 h-4" />
+              Filtros
+              {(selectedUser !== 'all' || selectedAccessLevel !== 'all' || selectedPriority !== 'all') && (
+                <Badge variant="secondary" className="ml-1">
+                  Ativo
+                </Badge>
+              )}
             </Button>
 
-            <div className="flex items-center gap-2 flex-1 max-w-md">
+            {/* Desktop: Campo de busca */}
+            <div className="hidden md:flex items-center gap-2 flex-1 max-w-md">
               <Search className="w-4 h-4 text-muted-foreground" />
               <Input
                 placeholder="Buscar tarefas..."
@@ -673,28 +682,25 @@ const TaskManager = () => {
                 className="flex-1 bg-muted border-border text-foreground placeholder-muted-foreground"
               />
             </div>
-
-
           </div>
         </div>
 
-        {/* Filtros avançados */}
-        <AdvancedTaskFilters
-          selectedUser={selectedUser}
-          onUserChange={setSelectedUser}
-          selectedAccessLevel={selectedAccessLevel}
-          onAccessLevelChange={setSelectedAccessLevel}
-          selectedPriority={selectedPriority}
-          onPriorityChange={setSelectedPriority}
-          userProfiles={userProfiles}
-          onClearFilters={clearAdvancedFilters}
-        />
+        {/* Filtros Avançados - Colapsável em Mobile */}
+        {(showFilters || window.innerWidth >= 768) && (
+          <AdvancedTaskFilters
+            selectedUser={selectedUser}
+            onUserChange={setSelectedUser}
+            selectedAccessLevel={selectedAccessLevel}
+            onAccessLevelChange={setSelectedAccessLevel}
+            selectedPriority={selectedPriority}
+            onPriorityChange={setSelectedPriority}
+            userProfiles={userProfiles}
+            onClearFilters={clearAdvancedFilters}
+          />
+        )}
 
-        {/* Cards de Estatísticas - CORRIGIDO FINAL DESKTOP 4 COLS */}
-        <div
-          className="grid grid-cols-2 gap-4 mb-6"
-          style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}
-        >
+        {/* Cards de Estatísticas - 2 colunas em mobile, 4 em desktop */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <Card
             className="cursor-pointer transition-colors"
             onClick={() => handleStatsClick('all')}
@@ -814,6 +820,18 @@ const TaskManager = () => {
               </div>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Botão Nova Tarefa - Acima do calendário */}
+        <div className="mb-4">
+          <Button
+            onClick={() => setIsCreateDialogOpen(true)}
+            disabled={isCreatingTask}
+            className="w-full md:w-auto bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-lg"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            {isCreatingTask ? 'Criando...' : 'Nova Tarefa'}
+          </Button>
         </div>
 
         {/* Navegação de visualização */}
