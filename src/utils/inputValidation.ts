@@ -10,9 +10,11 @@ export const validatePassword = (password: string): { isValid: boolean; message?
     return { isValid: false, message: 'A senha deve ter pelo menos 8 caracteres' };
   }
 
+  /* REMOVIDO: Obrigatoriedade de letra maiúscula
   if (!/[A-Z]/.test(password)) {
     return { isValid: false, message: 'A senha deve conter pelo menos uma letra maiúscula' };
   }
+  */
 
   if (!/[a-z]/.test(password)) {
     return { isValid: false, message: 'A senha deve conter pelo menos uma letra minúscula' };
