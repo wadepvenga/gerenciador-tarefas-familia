@@ -31,10 +31,10 @@ export const formatTimeToBR = (date: Date | string): string => {
 export const isSameDay = (date1: Date | string, date2: Date | string): boolean => {
   const d1 = typeof date1 === 'string' ? new Date(date1) : date1;
   const d2 = typeof date2 === 'string' ? new Date(date2) : date2;
-  
+
   return d1.getFullYear() === d2.getFullYear() &&
-         d1.getMonth() === d2.getMonth() &&
-         d1.getDate() === d2.getDate();
+    d1.getMonth() === d2.getMonth() &&
+    d1.getDate() === d2.getDate();
 };
 
 export const getTodayBR = (): Date => {
@@ -46,8 +46,8 @@ export const getWeekDaysBR = (selectedDate: Date): Date[] => {
   const dayOfWeek = selectedDate.getDay();
   const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
   startOfWeek.setDate(selectedDate.getDate() - daysFromMonday);
-  
-  return Array.from({ length: 6 }, (_, i) => {
+
+  return Array.from({ length: 7 }, (_, i) => {
     const day = new Date(startOfWeek);
     day.setDate(startOfWeek.getDate() + i);
     return day;
@@ -59,24 +59,24 @@ export const getMonthDaysBR = (selectedDate: Date): Date[] => {
   const lastDay = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0);
   const startDate = new Date(firstDay);
   startDate.setDate(firstDay.getDate() - firstDay.getDay());
-  
+
   const days = [];
   const current = new Date(startDate);
-  
+
   while (current <= lastDay || current.getDay() !== 0) {
     days.push(new Date(current));
     current.setDate(current.getDate() + 1);
   }
-  
+
   return days;
 };
 
 export const getViewTitleBR = (currentView: 'day' | 'week' | 'month', selectedDate: Date): string => {
   switch (currentView) {
     case 'day':
-      return selectedDate.toLocaleDateString('pt-BR', { 
-        weekday: 'long', 
-        day: 'numeric', 
+      return selectedDate.toLocaleDateString('pt-BR', {
+        weekday: 'long',
+        day: 'numeric',
         month: 'long',
         year: 'numeric'
       });
@@ -86,12 +86,12 @@ export const getViewTitleBR = (currentView: 'day' | 'week' | 'month', selectedDa
       const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
       weekStart.setDate(selectedDate.getDate() - daysFromMonday);
       const weekEnd = new Date(weekStart);
-      weekEnd.setDate(weekStart.getDate() + 5);
+      weekEnd.setDate(weekStart.getDate() + 6);
       return `${weekStart.getDate()}/${weekStart.getMonth() + 1}/${weekStart.getFullYear()} - ${weekEnd.getDate()}/${weekEnd.getMonth() + 1}/${weekEnd.getFullYear()}`;
     case 'month':
-      return selectedDate.toLocaleDateString('pt-BR', { 
-        year: 'numeric', 
-        month: 'long' 
+      return selectedDate.toLocaleDateString('pt-BR', {
+        year: 'numeric',
+        month: 'long'
       });
     default:
       return '';
