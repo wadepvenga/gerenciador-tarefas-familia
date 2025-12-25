@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from '@/components/ui/toaster';
+import { ToasterErrorBoundary } from '@/components/ToasterErrorBoundary';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { AuthProvider, useSupabaseAuth } from '@/hooks/useSupabaseAuth';
 import Index from '@/pages/Index';
@@ -31,9 +32,9 @@ class ErrorBoundary extends Component<
 
   render() {
     if (this.state.hasError) {
-      const isIPad = navigator.platform.includes('iPad') || 
-                     (navigator.platform.includes('Mac') && navigator.maxTouchPoints > 0);
-      
+      const isIPad = navigator.platform.includes('iPad') ||
+        (navigator.platform.includes('Mac') && navigator.maxTouchPoints > 0);
+
       return (
         <div className="h-screen w-full bg-background text-foreground flex items-center justify-center p-6">
           <div className="max-w-md w-full bg-card backdrop-blur-sm border border-border rounded-lg p-6 text-center">
@@ -45,9 +46,9 @@ class ErrorBoundary extends Component<
             </div>
             {isIPad && (
               <div className="text-muted-foreground text-xs mb-4">
-                <strong>iPad Debug Info:</strong><br/>
-                Platform: {navigator.platform}<br/>
-                User Agent: {navigator.userAgent.substring(0, 50)}...<br/>
+                <strong>iPad Debug Info:</strong><br />
+                Platform: {navigator.platform}<br />
+                User Agent: {navigator.userAgent.substring(0, 50)}...<br />
                 Touch Points: {navigator.maxTouchPoints}
               </div>
             )}
@@ -72,15 +73,15 @@ class ErrorBoundary extends Component<
 // Loading component with iPad-specific styling
 function LoadingScreen() {
   const [loadingTime, setLoadingTime] = useState(0);
-  
+
   useEffect(() => {
     const interval = setInterval(() => {
       setLoadingTime(prev => prev + 1);
     }, 1000);
-    
+
     return () => clearInterval(interval);
   }, []);
-  
+
   return (
     <div className="h-screen w-full bg-background text-foreground flex items-center justify-center prevent-white-screen">
       <div className="text-center">
@@ -89,8 +90,8 @@ function LoadingScreen() {
           {loadingTime > 10 && "Carregamento está demorando mais que o esperado..."}
           {loadingTime > 20 && (
             <div className="mt-2">
-              <button 
-                onClick={() => window.location.reload()} 
+              <button
+                onClick={() => window.location.reload()}
                 className="bg-primary hover:opacity-90 text-primary-foreground px-4 py-2 rounded text-sm"
               >
                 Recarregar Página
@@ -106,7 +107,7 @@ function LoadingScreen() {
 function AppContent() {
   const { currentUser, needsPasswordChange, loading } = useSupabaseAuth();
   const [debugMode, setDebugMode] = useState(false);
-  
+
   // Check for debug mode in URL
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -114,12 +115,12 @@ function AppContent() {
       setDebugMode(true);
     }
   }, []);
-  
+
   // iPad detection and logging
   useEffect(() => {
-    const isIPad = navigator.platform.includes('iPad') || 
-                   (navigator.platform.includes('Mac') && navigator.maxTouchPoints > 0);
-    
+    const isIPad = navigator.platform.includes('iPad') ||
+      (navigator.platform.includes('Mac') && navigator.maxTouchPoints > 0);
+
     if (isIPad) {
       console.log('🍎 iPad detected - App.tsx');
       console.log('Platform:', navigator.platform);
@@ -137,29 +138,29 @@ function AppContent() {
   const content = (
     <Router>
       <Routes>
-        <Route 
-          path="/login" 
+        <Route
+          path="/login"
           element={
             currentUser ? (
               needsPasswordChange ? <Navigate to="/change-password" replace /> : <Navigate to="/" replace />
             ) : <LoginForm />
-          } 
+          }
         />
-        <Route 
-          path="/change-password" 
+        <Route
+          path="/change-password"
           element={
             currentUser ? (
               needsPasswordChange ? <FirstTimePasswordChange /> : <Navigate to="/" replace />
             ) : <Navigate to="/login" replace />
-          } 
+          }
         />
-        <Route 
-          path="/" 
+        <Route
+          path="/"
           element={
             currentUser ? (
               needsPasswordChange ? <Navigate to="/change-password" replace /> : <Index />
             ) : <Navigate to="/login" replace />
-          } 
+          }
         />
       </Routes>
     </Router>
@@ -190,7 +191,9 @@ function App() {
         <ThemeProvider>
           <AuthProvider>
             <AppContent />
-            <Toaster />
+            <ToasterErrorBoundary>
+              <Toaster />
+            </ToasterErrorBoundary>
           </AuthProvider>
         </ThemeProvider>
       </QueryClientProvider>
