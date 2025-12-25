@@ -273,7 +273,7 @@ export const useTaskManager = () => {
         return;
       }
 
-      if (taskData) {
+      if (taskData && Array.isArray(taskData)) {
         const formattedTasks: Task[] = taskData.map(formatTaskFromDB);
         console.log('✅ Tarefas carregadas:', formattedTasks.length);
         setTasks(formattedTasks);
@@ -350,7 +350,7 @@ export const useTaskManager = () => {
     // Filtro por usuário (apenas tarefas atribuídas)
     if (selectedUser !== 'all') {
       filtered = filtered.filter(task =>
-        task.assigned_users.includes(selectedUser)
+        task && task.assigned_users && Array.isArray(task.assigned_users) && task.assigned_users.includes(selectedUser)
       );
     }
 
@@ -363,10 +363,10 @@ export const useTaskManager = () => {
           .eq('role', selectedAccessLevel)
           .eq('family_id', currentUser?.family_id);
 
-        if (userProfiles) {
+        if (userProfiles && Array.isArray(userProfiles)) {
           const userIds = userProfiles.map(profile => profile.user_id);
           filtered = filtered.filter(task =>
-            task.assigned_users.some(userId => userIds.includes(userId))
+            task && task.assigned_users && Array.isArray(task.assigned_users) && task.assigned_users.some(userId => userIds.includes(userId))
           );
         }
       } catch (error) {

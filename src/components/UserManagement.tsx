@@ -82,7 +82,7 @@ const UserManagement: React.FC = () => {
         return;
       }
 
-      const users = (data || []).map((user: any) => ({
+      const users = (Array.isArray(data) ? data : []).map((user: any) => ({
         id: user.id as string,
         user_id: user.user_id as string,
         name: user.name as string,
@@ -472,7 +472,7 @@ Esta ação NÃO excluirá a conta dele no sistema da Rockfeller, mas ele não p
                           <SelectValue placeholder="Selecione uma família" />
                         </SelectTrigger>
                         <SelectContent className="bg-card border-border dark:bg-slate-800 dark:border-slate-700">
-                          {nuclei.map(n => (
+                          {(nuclei || []).map(n => (
                             <SelectItem key={n.id} value={n.id}>{n.name}</SelectItem>
                           ))}
                         </SelectContent>
@@ -505,7 +505,7 @@ Esta ação NÃO excluirá a conta dele no sistema da Rockfeller, mas ele não p
 
         <CardContent>
           <div className="space-y-3">
-            {confirmedUsers.map(user => (
+            {(confirmedUsers || []).map(user => (
               <div key={user.id} className={`flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 rounded-lg border gap-4 ${user.is_active === false
                 ? 'bg-red-500/10 border-red-500/30'
                 : 'bg-muted/40 border-border dark:bg-slate-700/30 dark:border-slate-600'
@@ -673,7 +673,7 @@ Esta ação NÃO excluirá a conta dele no sistema da Rockfeller, mas ele não p
                   <SelectValue placeholder="Selecione uma família" />
                 </SelectTrigger>
                 <SelectContent className="bg-slate-800 border-slate-700">
-                  {nuclei.map(n => (
+                  {(nuclei || []).map(n => (
                     <SelectItem key={n.id} value={n.id}>{n.name}</SelectItem>
                   ))}
                 </SelectContent>

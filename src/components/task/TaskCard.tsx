@@ -65,7 +65,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
                 </button>
               )}
             </div>
-            
+
             {task.due_date && (
               <div className="text-muted-foreground text-xs font-medium dark:text-slate-300">
                 {getTimeFromDate(task.due_date)}
@@ -93,7 +93,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
         {task.assigned_users && task.assigned_users.length > 0 && (
           <div className="flex items-center gap-1 text-muted-foreground dark:text-slate-400">
             <User className="w-3 h-3" />
-            <span className="text-xs">Atribuído: {task.assigned_users.map(userId => getUserName(userId)).join(', ')}</span>
+            <span className="text-xs">Atribuído: {(task.assigned_users || []).map(userId => getUserName(userId)).filter(Boolean).join(', ')}</span>
           </div>
         )}
 

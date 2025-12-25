@@ -63,7 +63,7 @@ const AdvancedTaskFilters: React.FC<AdvancedTaskFiltersProps> = ({
     { value: 'urgente', label: 'Urgente' }
   ];
 
-  const userList = Object.values(userProfiles).sort((a, b) => a.name.localeCompare(b.name));
+  const userList = userProfiles ? Object.values(userProfiles).sort((a, b) => a.name.localeCompare(b.name)) : [];
 
   const hasActiveFilters = selectedUser !== 'all' || selectedAccessLevel !== 'all' || selectedPriority !== 'all';
 
@@ -87,7 +87,7 @@ const AdvancedTaskFilters: React.FC<AdvancedTaskFiltersProps> = ({
             </Button>
           )}
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <Label className="text-muted-foreground text-sm mb-2 block">Filtrar por Usuário Atribuído</Label>

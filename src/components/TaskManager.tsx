@@ -39,12 +39,12 @@ import { useUserProfiles } from '@/hooks/useUserProfiles';
  */
 
 const TaskManager = () => {
-  const { 
-    tasks, 
-    filteredTasks, 
-    isLoading, 
+  const {
+    tasks,
+    filteredTasks,
+    isLoading,
     updatingTask,
-    activeFilter, 
+    activeFilter,
     setActiveFilter,
     selectedUser,
     setSelectedUser,
@@ -69,7 +69,7 @@ const TaskManager = () => {
 
   const { currentUser } = useSupabaseAuth();
   const { getUserName, userProfiles } = useUserProfiles();
-  
+
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isCreatingTask, setIsCreatingTask] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -118,7 +118,7 @@ const TaskManager = () => {
   // 🔔 MELHORIA: Componente para mostrar status da conexão real-time
   const RealTimeStatusIndicator = () => {
     const [timeAgo, setTimeAgo] = useState('');
-    
+
     useEffect(() => {
       const updateTimeAgo = () => {
         if (lastUpdateTime) {
@@ -132,7 +132,7 @@ const TaskManager = () => {
           }
         }
       };
-      
+
       updateTimeAgo();
       const interval = setInterval(updateTimeAgo, 1000);
       return () => clearInterval(interval);
@@ -184,7 +184,7 @@ const TaskManager = () => {
       setSelectedStatus(filterType);
       setActiveFilter('all'); // Resetar filtro temporal
     }
-    
+
     // Limpar filtros avançados relevantes, preservando o filtro de usuário
     // (não resetar selectedUser para manter o contexto do usuário selecionado)
     setSelectedAccessLevel('all');
@@ -211,9 +211,9 @@ const TaskManager = () => {
 
   // Função para renderizar informações dos usuários de forma compacta
   const renderUserInfo = (task: Task, compact: boolean = false) => {
-    const assignedNames = task.assigned_users.map(id => getUserNameFallback(id));
+    const assignedNames = (task.assigned_users || []).map(id => getUserNameFallback(id));
     const creatorName = getUserNameFallback(task.created_by);
-    
+
     if (compact) {
       // Versão compacta para visualização mensal - mostra criador e usuários
       return (
@@ -247,7 +247,7 @@ const TaskManager = () => {
 
   const handleCreateTask = async () => {
     if (isCreatingTask) return;
-    
+
     setIsCreatingTask(true);
     try {
       const success = await createTask(newTask);
@@ -273,7 +273,7 @@ const TaskManager = () => {
 
   const handleEditTask = async () => {
     if (isEditingTask) return;
-    
+
     setIsEditingTask(true);
     try {
       const success = await updateTask(editTask.id, {
@@ -309,22 +309,22 @@ const TaskManager = () => {
   const handleOpenEditDialog = (task: Task) => {
     const extractTimeForInput = (dateString: string): string => {
       if (!dateString) return '09:00';
-      
+
       let timePart = '';
-      
+
       if (dateString.includes(' ')) {
         timePart = dateString.split(' ')[1];
       }
-      
+
       if (dateString.includes('T')) {
         timePart = dateString.split('T')[1];
       }
-      
+
       if (timePart && timePart.includes(':')) {
         const timeParts = timePart.split(':');
         return `${timeParts[0]}:${timeParts[1]}`;
       }
-      
+
       return '09:00';
     };
 
@@ -358,7 +358,7 @@ const TaskManager = () => {
     const day = String(date.getDate()).padStart(2, '0');
     const dateString = `${year}-${month}-${day}`;
     const timeString = `${hour.toString().padStart(2, '0')}:00`;
-    
+
     setNewTask({
       title: '',
       description: '',
@@ -377,7 +377,7 @@ const TaskManager = () => {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     const dateString = `${year}-${month}-${day}`;
-    
+
     setNewTask({
       title: '',
       description: '',
@@ -414,39 +414,39 @@ const TaskManager = () => {
   const getTasksForHour = (hour: number) => {
     return filteredTasks.filter(task => {
       if (!task.due_date) return false;
-      
+
       const taskDate = new Date(task.due_date);
       const taskHour = taskDate.getHours();
-      
+
       const selectedYear = selectedDate.getFullYear();
       const selectedMonth = selectedDate.getMonth();
       const selectedDay = selectedDate.getDate();
-      
+
       const taskYear = taskDate.getFullYear();
       const taskMonth = taskDate.getMonth();
       const taskDay = taskDate.getDate();
-      
-      return taskYear === selectedYear && 
-             taskMonth === selectedMonth && 
-             taskDay === selectedDay && 
-             taskHour === hour;
+
+      return taskYear === selectedYear &&
+        taskMonth === selectedMonth &&
+        taskDay === selectedDay &&
+        taskHour === hour;
     });
   };
 
   const getTasksForDay = (day: Date) => {
     return filteredTasks.filter(task => {
       if (!task.due_date) return false;
-      
+
       const taskDate = new Date(task.due_date);
-      
+
       const taskYear = taskDate.getFullYear();
       const taskMonth = taskDate.getMonth();
       const taskDay = taskDate.getDate();
-      
+
       const dayYear = day.getFullYear();
       const dayMonth = day.getMonth();
       const dayDay = day.getDate();
-      
+
       return taskYear === dayYear && taskMonth === dayMonth && taskDay === dayDay;
     });
   };
@@ -467,13 +467,12 @@ const TaskManager = () => {
         const dayTasks = getTasksForDay(day);
         const isToday = isSameDay(day, getTodayBR());
         const dayLabel = day.toLocaleDateString('pt-BR', { weekday: 'short' });
-        
+
         return (
           <div
             key={index}
-            className={`bg-muted/30 rounded-lg border border-border dark:bg-slate-800/30 dark:border-slate-700/50 flex flex-col h-[300px] sm:h-[900px] ${
-              isToday ? 'ring-2 ring-primary/40 dark:ring-blue-500/50' : ''
-            }`}
+            className={`bg-muted/30 rounded-lg border border-border dark:bg-slate-800/30 dark:border-slate-700/50 flex flex-col h-[300px] sm:h-[900px] ${isToday ? 'ring-2 ring-primary/40 dark:ring-blue-500/50' : ''
+              }`}
             onDoubleClick={() => handleDoubleClickDay(day)}
           >
             {/* Header do dia */}
@@ -485,18 +484,18 @@ const TaskManager = () => {
                 {day.getDate()}
               </div>
             </div>
-            
+
             {/* Container das tarefas com scroll */}
-            <div 
+            <div
               className="flex-1 p-2 sm:p-3 overflow-y-auto scrollbar-thin scrollbar-thumb-muted scrollbar-track-muted/40 dark:scrollbar-thumb-slate-600 dark:scrollbar-track-slate-800 h-[220px] max-h-[220px] sm:h-[800px] sm:max-h-[800px]"
             >
               <div className="space-y-1 sm:space-y-2">
-                {dayTasks.length === 0 ? (
+                {(!dayTasks || dayTasks.length === 0) ? (
                   <div className="text-xs text-muted-foreground dark:text-slate-500 text-center py-4">
                     Nenhuma tarefa
                   </div>
                 ) : (
-                  dayTasks.map((task) => (
+                  (dayTasks || []).map((task) => (
                     <div
                       key={task.id}
                       className="cursor-pointer"
@@ -518,7 +517,7 @@ const TaskManager = () => {
                 )}
               </div>
             </div>
-            
+
             {/* Contador de tarefas */}
             {dayTasks.length > 0 && (
               <div className="px-2 sm:px-3 py-1 border-t border-slate-700/30">
@@ -545,21 +544,20 @@ const TaskManager = () => {
         const dayTasks = getTasksForDay(day);
         const isToday = isSameDay(day, getTodayBR());
         const isCurrentMonth = day.getMonth() === selectedDate.getMonth();
-        
+
         return (
           <div
             key={index}
-            className={`bg-muted/30 rounded border border-border p-1 min-h-[80px] ${
-              isToday ? 'ring-1 ring-primary/40' : ''
-            } ${!isCurrentMonth ? 'opacity-50' : ''}`}
+            className={`bg-muted/30 rounded border border-border p-1 min-h-[80px] ${isToday ? 'ring-1 ring-primary/40' : ''
+              } ${!isCurrentMonth ? 'opacity-50' : ''}`}
             onDoubleClick={() => handleDoubleClickDay(day)}
           >
             <div className="text-xs text-muted-foreground mb-1">
               {day.getDate()}
             </div>
-            
+
             <div className="space-y-0.5">
-              {dayTasks.slice(0, 3).map((task) => (
+              {(dayTasks || []).slice(0, 3).map((task) => (
                 <div
                   key={task.id}
                   className={`text-xs p-1 rounded cursor-pointer ${getStatusColor(task.status, task)} ${getPriorityColor(task.priority)} bg-card/70 text-foreground`}
@@ -591,7 +589,7 @@ const TaskManager = () => {
       {Array.from({ length: 24 }, (_, hour) => {
         const hourTasks = getTasksForHour(hour);
         const timeLabel = `${hour.toString().padStart(2, '0')}:00`;
-        
+
         return (
           <div
             key={hour}
@@ -603,7 +601,7 @@ const TaskManager = () => {
                 {timeLabel}
               </div>
               <div className="flex-1 space-y-2">
-                {hourTasks.map((task) => (
+                {(hourTasks || []).map((task) => (
                   <div
                     key={task.id}
                     className="cursor-pointer"
@@ -655,7 +653,7 @@ const TaskManager = () => {
               </Button>
             </div>
           </div>
-          
+
           <div className="flex flex-wrap gap-3 items-center">
             <Button
               onClick={() => setIsCreateDialogOpen(true)}
@@ -693,11 +691,11 @@ const TaskManager = () => {
         />
 
         {/* Cards de Estatísticas - CORRIGIDO FINAL DESKTOP 4 COLS */}
-        <div 
+        <div
           className="grid grid-cols-2 gap-4 mb-6"
           style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}
         >
-          <Card 
+          <Card
             className="cursor-pointer transition-colors"
             onClick={() => handleStatsClick('all')}
           >
@@ -727,7 +725,7 @@ const TaskManager = () => {
             </CardContent>
           </Card>
 
-          <Card 
+          <Card
             className="cursor-pointer transition-colors"
             onClick={() => handleStatsClick('pendente')}
           >
@@ -757,7 +755,7 @@ const TaskManager = () => {
             </CardContent>
           </Card>
 
-          <Card 
+          <Card
             className="cursor-pointer transition-colors"
             onClick={() => handleStatsClick('overdue')}
           >
@@ -787,7 +785,7 @@ const TaskManager = () => {
             </CardContent>
           </Card>
 
-          <Card 
+          <Card
             className="cursor-pointer transition-colors"
             onClick={() => handleStatsClick('concluida')}
           >
@@ -842,7 +840,7 @@ const TaskManager = () => {
                 <ChevronRight className="w-4 h-4" />
               </Button>
             </div>
-            
+
             <div className="flex items-center gap-2">
               <Button
                 onClick={() => setCurrentView('day')}
@@ -870,7 +868,7 @@ const TaskManager = () => {
               </Button>
             </div>
           </div>
-          
+
           <TaskFilters
             activeFilter={activeFilter}
             onFilterChange={setActiveFilter}

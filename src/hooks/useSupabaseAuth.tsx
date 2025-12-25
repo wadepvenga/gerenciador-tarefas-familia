@@ -758,7 +758,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return [];
       }
 
-      return (data || []).map((user: any) => ({
+      return (Array.isArray(data) ? data : []).map((user: any) => ({
         id: user.id as string,
         user_id: user.user_id as string,
         name: user.name as string,
@@ -805,7 +805,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           return [];
         }
 
-        return (fallbackData || []).map((user: any) => ({
+        return (Array.isArray(fallbackData) ? fallbackData : []).map((user: any) => ({
           id: user.id as string,
           user_id: user.user_id as string,
           name: user.name as string,
@@ -818,27 +818,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }));
       }
 
-      // ✅ FILTRAR APENAS USUÁRIOS ATIVOS da função RPC
-      // A função RPC já deve filtrar por is_active = true, mas vamos garantir
-      const activeUsers = (data || []).filter((user: any) => {
-        // Se a função RPC retorna is_active, usar esse valor
+      // ✅ Se chegamos aqui, rpc funcionou e não entrou no if(error)
+      // FILTRAR APENAS USUÁRIOS ATIVOS da função RPC
+      const activeUsers = (Array.isArray(data) ? data : []).filter((user: any) => {
         if (user.hasOwnProperty('is_active')) {
           return user.is_active !== false;
         }
-        // Se não retorna is_active, assumir que são todos ativos (comportamento padrão da RPC)
         return true;
       });
 
       return activeUsers.map((user: any) => ({
-        id: user.id || user.user_id, // Fallback para compatibilidade
+        id: user.id || user.user_id,
         user_id: user.user_id as string,
         name: user.name as string,
         email: user.email as string,
         role: user.role as User['role'],
-        is_active: true, // Todos os usuários retornados pela RPC são ativos
-        password_hash: '', // Não retornado pela RPC
-        created_at: new Date(), // Não retornado pela RPC
-        last_login: undefined // Não retornado pela RPC
+        is_active: true,
+        password_hash: '',
+        created_at: new Date(),
+        last_login: undefined
       }));
     } catch (error) {
       console.error('Erro ao buscar usuários visíveis:', error);
@@ -859,7 +857,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       // 🔄 RPC: Usar a nova função do banco para trocar a senha com segurança
-      const { data, error } = await supabase.rpc('change_user_password', {
+      const { data, error } = await supabase.rpc('change_user_password' as any, {
         target_user_id: userId,
         new_password: newPassword
       });
@@ -1136,7 +1134,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       // 🔄 ATUALIZAR: Senha no Supabase Auth usando o novo RPC
       try {
-        const { data: rpcData, error: rpcError } = await supabase.rpc('change_user_password', {
+        const { data: rpcData, error: rpcError } = await supabase.rpc('change_user_password' as any, {
           target_user_id: userProfile.user_id,
           new_password: newTemporaryPassword
         });

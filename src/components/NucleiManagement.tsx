@@ -25,7 +25,7 @@ const NucleiManagement: React.FC = () => {
                 .order('name', { ascending: true });
 
             if (error) throw error;
-            setNuclei((data || []).map(item => ({
+            setNuclei((Array.isArray(data) ? data : []).map(item => ({
                 ...item,
                 created_at: new Date(item.created_at)
             })));
@@ -188,7 +188,7 @@ const NucleiManagement: React.FC = () => {
                                 </p>
                             </div>
                         )}
-                        {nuclei.map((nucleus) => (
+                        {(Array.isArray(nuclei) ? nuclei : []).map((nucleus) => (
                             <div
                                 key={nucleus.id}
                                 className="p-4 rounded-xl border border-border bg-muted/30 flex justify-between items-start group hover:border-primary/50 transition-colors"

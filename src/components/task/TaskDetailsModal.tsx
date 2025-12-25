@@ -38,7 +38,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
     if (!canEdit && !canDelete) return null;
 
     const statusButtons = [];
-    
+
     // Botões de status apenas se pode editar
     if (canEdit) {
       switch (task.status) {
@@ -60,7 +60,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
               )}
             </Button>
           );
-          
+
           statusButtons.push(
             <AlertDialog key="cancel">
               <AlertDialogTrigger asChild>
@@ -135,7 +135,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
               </AlertDialogContent>
             </AlertDialog>
           );
-          
+
           statusButtons.push(
             <AlertDialog key="cancel2">
               <AlertDialogTrigger asChild>
@@ -227,7 +227,7 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
         <DialogHeader>
           <DialogTitle className="text-foreground dark:text-white text-lg sm:text-xl pr-8 break-words">{task.title}</DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-6">
           <div className="flex flex-wrap items-center gap-2">
             <Badge className={`${getStatusColor(task.status, task)} border`}>
@@ -251,14 +251,14 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
                 <Calendar className="w-4 h-4 flex-shrink-0" />
                 <span>Criado em: {formatDateToBR(task.created_at)}</span>
               </div>
-              
+
               {task.due_date && (
                 <div className="flex items-center space-x-2 text-sm text-muted-foreground dark:text-slate-400">
                   <Clock className="w-4 h-4 flex-shrink-0" />
                   <span>Vence em: {formatDateTimeToBR(task.due_date)}</span>
                 </div>
               )}
-              
+
               {task.completed_at && (
                 <div className="flex items-center space-x-2 text-sm text-muted-foreground dark:text-slate-400">
                   <CheckCircle className="w-4 h-4 flex-shrink-0" />
@@ -274,11 +274,11 @@ const TaskDetailsModal: React.FC<TaskDetailsModalProps> = ({
                   <span>Atribuído a:</span>
                 </div>
                 <p className="text-sm text-muted-foreground dark:text-slate-400">
-                  {task.assigned_users.map((userId: string) => getUserName(userId)).join(', ')}
+                  {(task.assigned_users || []).map((userId: string) => getUserName(userId)).filter(Boolean).join(', ')}
                 </p>
               </div>
             )}
-            
+
             {task.created_by && (
               <div>
                 <div className="flex items-center space-x-2 text-sm text-muted-foreground dark:text-slate-300 mb-2">

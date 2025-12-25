@@ -100,9 +100,9 @@ const UserSelector: React.FC<UserSelectorProps> = ({
         {/* Usuários selecionados */}
         {selectedUsers.length > 0 && (
           <div className="flex flex-wrap gap-2">
-            {getSelectedUserDetails().map(user => (
-              <Badge 
-                key={user.user_id} 
+            {(getSelectedUserDetails() || []).map(user => (
+              <Badge
+                key={user.user_id}
                 className={`${getRoleColor(user.role)} flex items-center gap-1`}
               >
                 {getRoleIcon(user.role)}
@@ -133,7 +133,7 @@ const UserSelector: React.FC<UserSelectorProps> = ({
           {isOpen && filteredUsers.length > 0 && (
             <Card className="absolute top-full left-0 right-0 z-50 mt-1 bg-slate-800 border-slate-700 max-h-60 overflow-y-auto">
               <CardContent className="p-2">
-                {filteredUsers
+                {(filteredUsers || [])
                   .filter(user => !selectedUsers.includes(user.user_id))
                   .map(user => (
                     <Button
