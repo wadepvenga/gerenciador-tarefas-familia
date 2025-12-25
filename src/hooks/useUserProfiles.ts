@@ -61,7 +61,7 @@ export const useUserProfiles = () => {
 
   const getUsersByIds = (userIds: string[]): UserProfile[] => {
     if (!userIds || !Array.isArray(userIds)) return [];
-    return userIds.map(id => userProfiles[id]).filter(Boolean);
+    return (Array.isArray(userIds) ? userIds : []).map(id => userProfiles[id]).filter(Boolean);
   };
 
   return {

@@ -137,9 +137,9 @@ export const useNotifications = () => {
 
   // Marcar notificação como lida
   const markAsRead = (id: string) => {
-    setNotifications(prev => 
-      prev.map(notification => 
-        notification.id === id 
+    setNotifications(prev =>
+      (prev || []).map(notification =>
+        notification.id === id
           ? { ...notification, read: true }
           : notification
       )
@@ -148,14 +148,14 @@ export const useNotifications = () => {
 
   // Marcar todas como lidas
   const markAllAsRead = () => {
-    setNotifications(prev => 
-      prev.map(notification => ({ ...notification, read: true }))
+    setNotifications(prev =>
+      (prev || []).map(notification => ({ ...notification, read: true }))
     );
   };
 
   // Remover notificação
   const removeNotification = (id: string) => {
-    setNotifications(prev => prev.filter(notification => notification.id !== id));
+    setNotifications(prev => (prev || []).filter(notification => notification.id !== id));
   };
 
   // Limpar todas as notificações
