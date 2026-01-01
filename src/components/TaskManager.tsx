@@ -19,6 +19,7 @@ import { getStatusColor, getPriorityColor, getStatusLabel, getPriorityLabel } fr
 import { formatDateToBR, formatTimeToBR, isSameDay, getTodayBR, getWeekDaysBR, getMonthDaysBR, getViewTitleBR } from '@/utils/dateUtils';
 import { NewTask, Task, EditTask } from '@/types/task';
 import { useUserProfiles } from '@/hooks/useUserProfiles';
+import useEmblaCarousel from 'embla-carousel-react';
 
 /* 
  * ⚠️  ATENÇÃO - ÁREA LIVRE DE DEBUG ⚠️ 
@@ -110,6 +111,34 @@ const TaskManager = () => {
     assigned_users: [],
     is_private: false
   });
+
+  // 🎡 Configuração do Carousel para Mobile (Visualização Semanal)
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: 'start',
+    containScroll: 'trimSnaps',
+    dragFree: false,
+    slidesToScroll: 2,
+    breakpoints: {
+      '(min-width: 768px)': { active: false }
+    }
+  });
+
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    const onSelect = () => {
+      setSelectedIndex(emblaApi.selectedScrollSnap());
+    };
+
+    emblaApi.on('select', onSelect);
+    onSelect(); // Inicializa o índice
+
+    return () => {
+      emblaApi.off('select', onSelect);
+    };
+  }, [emblaApi]);
 
   // 🔧 Função helper para obter nome do usuário
   const getUserNameFallback = (userId: string) => {
@@ -463,73 +492,86 @@ const TaskManager = () => {
 
   // Renderização da visualização semanal
   const renderWeekView = () => (
-    <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-4">
-      {weekDays.map((day, index) => {
-        const dayTasks = getTasksForDay(day);
-        const isToday = isSameDay(day, getTodayBR());
-        const dayLabel = day.toLocaleDateString('pt-BR', { weekday: 'short' });
+    <div className="overflow-hidden" ref={emblaRef}>
+      <div className="flex md:grid md:grid-cols-6 gap-2 sm:gap-4 touch-pan-y">
+        {weekDays.map((day, index) => {
+          const dayTasks = getTasksForDay(day);
+          const isToday = isSameDay(day, getTodayBR());
+          const dayLabel = day.toLocaleDateString('pt-BR', { weekday: 'short' });
 
-        return (
-          <div
-            key={index}
-            className={`bg-muted/30 rounded-lg border border-border dark:bg-slate-800/30 dark:border-slate-700/50 flex flex-col h-[300px] sm:h-[900px] ${isToday ? 'ring-2 ring-primary/40 dark:ring-blue-500/50' : ''
-              }`}
-            onDoubleClick={() => handleDoubleClickDay(day)}
-          >
-            {/* Header do dia */}
-            <div className="flex items-center justify-between p-2 sm:p-3 border-b border-border/60 dark:border-slate-700/30">
-              <div className="text-sm font-medium text-foreground/90 dark:text-slate-300">
-                {dayLabel}
-              </div>
-              <div className="text-xs text-muted-foreground dark:text-slate-400">
-                {day.getDate()}
-              </div>
-            </div>
-
-            {/* Container das tarefas com scroll */}
+          return (
             <div
-              className="flex-1 p-2 sm:p-3 overflow-y-auto scrollbar-thin scrollbar-thumb-muted scrollbar-track-muted/40 dark:scrollbar-thumb-slate-600 dark:scrollbar-track-slate-800 h-[220px] max-h-[220px] sm:h-[800px] sm:max-h-[800px]"
+              key={index}
+              className={`flex-[0_0_48%] min-w-0 md:flex-none bg-muted/30 rounded-lg border border-border dark:bg-slate-800/30 dark:border-slate-700/50 flex flex-col h-[300px] sm:h-[900px] ${isToday ? 'ring-2 ring-primary/40 dark:ring-blue-500/50' : ''
+                }`}
+              onDoubleClick={() => handleDoubleClickDay(day)}
             >
-              <div className="space-y-1 sm:space-y-2">
-                {(!dayTasks || dayTasks.length === 0) ? (
-                  <div className="text-xs text-muted-foreground dark:text-slate-500 text-center py-4">
-                    Nenhuma tarefa
-                  </div>
-                ) : (
-                  (dayTasks || []).map((task) => (
-                    <div
-                      key={task.id}
-                      className="cursor-pointer"
-                      onClick={() => handleTaskClick(task)}
-                    >
-                      <TaskCard
-                        task={task}
-                        actionButtons={<div />}
-                        getStatusColor={getStatusColor}
-                        getPriorityColor={getPriorityColor}
-                        getStatusLabel={getStatusLabel}
-                        getPriorityLabel={getPriorityLabel}
-                        getUserName={getUserNameFallback}
-                        canEditTask={() => canEditTaskFull(task)}
-                        onEditTask={handleOpenEditDialog}
-                      />
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-
-            {/* Contador de tarefas */}
-            {dayTasks.length > 0 && (
-              <div className="px-2 sm:px-3 py-1 border-t border-slate-700/30">
-                <div className="text-xs text-slate-400 text-center">
-                  {dayTasks.length} tarefa{dayTasks.length !== 1 ? 's' : ''}
+              {/* Header do dia */}
+              <div className="flex items-center justify-between p-2 sm:p-3 border-b border-border/60 dark:border-slate-700/30">
+                <div className="text-sm font-medium text-foreground/90 dark:text-slate-300">
+                  {dayLabel}
+                </div>
+                <div className="text-xs text-muted-foreground dark:text-slate-400">
+                  {day.getDate()}
                 </div>
               </div>
-            )}
-          </div>
-        );
-      })}
+
+              {/* Container das tarefas com scroll */}
+              <div
+                className="flex-1 p-2 sm:p-3 overflow-y-auto scrollbar-thin scrollbar-thumb-muted scrollbar-track-muted/40 dark:scrollbar-thumb-slate-600 dark:scrollbar-track-slate-800 h-[220px] max-h-[220px] sm:h-[800px] sm:max-h-[800px]"
+              >
+                <div className="space-y-1 sm:space-y-2">
+                  {(!dayTasks || dayTasks.length === 0) ? (
+                    <div className="text-xs text-muted-foreground dark:text-slate-500 text-center py-4">
+                      Nenhuma tarefa
+                    </div>
+                  ) : (
+                    (dayTasks || []).map((task) => (
+                      <div
+                        key={task.id}
+                        className="cursor-pointer"
+                        onClick={() => handleTaskClick(task)}
+                      >
+                        <TaskCard
+                          task={task}
+                          actionButtons={<div />}
+                          getStatusColor={getStatusColor}
+                          getPriorityColor={getPriorityColor}
+                          getStatusLabel={getStatusLabel}
+                          getPriorityLabel={getPriorityLabel}
+                          getUserName={getUserNameFallback}
+                          canEditTask={() => canEditTaskFull(task)}
+                          onEditTask={handleOpenEditDialog}
+                        />
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              {/* Contador de tarefas */}
+              {dayTasks.length > 0 && (
+                <div className="px-2 sm:px-3 py-1 border-t border-slate-700/30">
+                  <div className="text-xs text-slate-400 text-center">
+                    {dayTasks.length} tarefa{dayTasks.length !== 1 ? 's' : ''}
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Indicador visual de swipe em mobile */}
+      <div className="flex md:hidden justify-center gap-1.5 mt-4">
+        {emblaApi?.scrollSnapList().map((_, i) => (
+          <div
+            key={i}
+            className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === selectedIndex ? 'bg-primary w-4' : 'bg-primary/20'
+              }`}
+          />
+        ))}
+      </div>
     </div>
   );
 
