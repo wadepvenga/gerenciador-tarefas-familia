@@ -59,7 +59,7 @@ export const useGoogleCalendar = () => {
                         access_type: 'offline',
                         prompt: 'consent',
                     },
-                    scopes: 'https://www.googleapis.com/calendar/v3/users/me/calendarList https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events',
+                    scopes: 'https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events',
                     redirectTo: window.location.origin,
                 },
             });
