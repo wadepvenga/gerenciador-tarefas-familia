@@ -9,6 +9,8 @@ import TaskManager from '@/components/TaskManager';
 import UserHeader from '@/components/UserHeader';
 import NotificationTestPanel from '@/components/NotificationTestPanel';
 import NucleiManagement from '@/components/NucleiManagement';
+import GoogleCalendarConfig from '@/components/GoogleCalendarConfig';
+import { Settings2 } from 'lucide-react';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('tasks');
@@ -104,7 +106,7 @@ const Index = () => {
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           {/* Desktop: Top navigation */}
-          <TabsList className="hidden md:grid w-full grid-cols-4 bg-muted border border-border">
+          <TabsList className="hidden md:grid w-full grid-cols-5 bg-muted border border-border">
             <TabsTrigger
               value="tasks"
               className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
@@ -135,13 +137,20 @@ const Index = () => {
                   <Shield className="w-4 h-4 mr-2" />
                   Núcleos
                 </TabsTrigger>
+                <TabsTrigger
+                  value="integrations"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                >
+                  <Settings2 className="w-4 h-4 mr-2" />
+                  Integrações
+                </TabsTrigger>
               </>
             )}
           </TabsList>
 
           {/* Mobile: Bottom navigation */}
           <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border md:hidden z-40 safe-area-inset-bottom">
-            <TabsList className="grid w-full grid-cols-4 h-16 bg-transparent border-0 rounded-none">
+            <TabsList className="grid w-full grid-cols-5 h-16 bg-transparent border-0 rounded-none">
               <TabsTrigger
                 value="tasks"
                 className="flex-col gap-1 data-[state=active]:bg-primary/10 data-[state=active]:text-primary h-full"
@@ -171,6 +180,13 @@ const Index = () => {
                   >
                     <Shield className="w-6 h-6" />
                     <span className="text-xs">Núcleos</span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="integrations"
+                    className="flex-col gap-1 data-[state=active]:bg-primary/10 data-[state=active]:text-primary h-full"
+                  >
+                    <Settings2 className="w-6 h-6" />
+                    <span className="text-xs">Integrac.</span>
                   </TabsTrigger>
                 </>
               )}
@@ -213,6 +229,10 @@ const Index = () => {
                     <NucleiManagement />
                   </CardContent>
                 </Card>
+              </TabsContent>
+
+              <TabsContent value="integrations" className="space-y-6">
+                <GoogleCalendarConfig />
               </TabsContent>
             </>
           )}
