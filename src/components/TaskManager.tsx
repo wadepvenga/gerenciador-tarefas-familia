@@ -508,10 +508,22 @@ const TaskManager = () => {
             >
               {/* Header do dia */}
               <div className="flex items-center justify-between p-2 sm:p-3 border-b border-border/60 dark:border-slate-700/30">
-                <div className="text-sm font-medium text-foreground/90 dark:text-slate-300">
+                <div
+                  className="text-sm font-medium text-foreground/90 dark:text-slate-300 cursor-pointer hover:text-primary transition-colors"
+                  onClick={() => {
+                    setSelectedDate(day);
+                    setCurrentView('day');
+                  }}
+                >
                   {dayLabel}
                 </div>
-                <div className="text-xs text-muted-foreground dark:text-slate-400">
+                <div
+                  className="text-xs text-muted-foreground dark:text-slate-400 cursor-pointer hover:text-primary transition-colors"
+                  onClick={() => {
+                    setSelectedDate(day);
+                    setCurrentView('day');
+                  }}
+                >
                   {day.getDate()}
                 </div>
               </div>
