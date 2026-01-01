@@ -10,16 +10,23 @@ import { supabase } from '@/integrations/supabase/client';
 import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
 
 const GoogleCalendarConfig = () => {
-    const { isConnected, connect, settings, updateSettings, loading } = useGoogleCalendar();
+    const { isConnected, connect, settings, updateSettings, loading, syncTasks } = useGoogleCalendar();
     const { session } = useSupabaseAuth();
     const [calendars, setCalendars] = useState<{ id: string; summary: string }[]>([]);
     const [fetchingCalendars, setFetchingCalendars] = useState(false);
+    const [isSyncing, setIsSyncing] = useState(false);
 
     useEffect(() => {
         if (isConnected) {
             fetchUserCalendars();
         }
     }, [isConnected]);
+
+    const handleManualSync = async () => {
+        setIsSyncing(true);
+        await syncTasks();
+        setIsSyncing(false);
+    };
 
     const fetchUserCalendars = async () => {
         setFetchingCalendars(true);
@@ -151,12 +158,20 @@ const GoogleCalendarConfig = () => {
                             </div>
 
                             <div className="pt-4 border-t border-border">
-                                <Button variant="secondary" className="w-full" onClick={() => fetchUserCalendars()}>
-                                    Sincronizar tarefas existentes (Manual)
+                                <Button
+                                    variant="secondary"
+                                    className="w-full gap-2"
+                                    onClick={handleManualSync}
+                                    disabled={isSyncing}
+                                >
+                                    <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
+                                    {isSyncing ? 'Sincronizando...' : 'Sincronizar tarefas existentes (Manual)'}
                                 </Button>
-                                <p className="text-[10px] text-center text-muted-foreground mt-2">
-                                    A sincronização manual enviará todas as tarefas pendentes para o calendário selecionado.
-                                </p>
+                                {settings?.last_sync_at && (
+                                    <p className="text-[10px] text-center text-muted-foreground mt-2">
+                                        Última sincronização: {new Date(settings.last_sync_at).toLocaleString()}
+                                    </p>
+                                )}
                             </div>
                         </>
                     )}

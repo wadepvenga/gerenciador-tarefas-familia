@@ -35,12 +35,79 @@ export const useGoogleCalendar = () => {
                 setSettings({
                     calendar_id: (data as any).calendar_id,
                     sync_enabled: (data as any).sync_enabled,
+                    last_sync_at: (data as any).last_sync_at,
                 });
             }
         } catch (error) {
             console.error('Error fetching calendar settings:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const syncTasks = async () => {
+        if (!isConnected || !settings) return;
+
+        try {
+            const token = session?.provider_token;
+            if (!token) throw new Error('Não autenticado com o Google');
+
+            // Buscar tarefas atribuídas ao usuário que tenham data de vencimento
+            const { data: tasks, error: tasksError } = await supabase
+                .from('tasks_familia' as any)
+                .select('*')
+                .contains('assigned_users', [currentUser?.user_id]);
+
+            if (tasksError) throw tasksError;
+
+            let syncedCount = 0;
+            for (const task of (tasks || [])) {
+                if (!task.due_date) continue;
+
+                const event = {
+                    summary: `👨‍👩‍👧‍👦 ${task.title}`,
+                    description: task.description || '',
+                    start: {
+                        dateTime: task.due_date,
+                    },
+                    end: {
+                        dateTime: task.due_date, // Tarefas são eventos pontuais por padrão
+                    },
+                };
+
+                const response = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${settings.calendar_id}/events`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(event),
+                });
+
+                if (response.ok) {
+                    syncedCount++;
+                }
+            }
+
+            // Atualizar última sincronização
+            await (supabase
+                .from('google_calendar_settings' as any) as any)
+                .update({ last_sync_at: new Date().toISOString() })
+                .eq('user_id', currentUser?.user_id);
+
+            setSettings(prev => prev ? { ...prev, last_sync_at: new Date().toISOString() } : null);
+
+            toast({
+                title: 'Sincronização concluída',
+                description: `${syncedCount} tarefas foram enviadas para o seu Google Agenda.`,
+            });
+        } catch (error: any) {
+            console.error('Error syncing tasks:', error);
+            toast({
+                title: 'Erro na sincronização',
+                description: error.message,
+                variant: 'destructive',
+            });
         }
     };
 
@@ -107,5 +174,7 @@ export const useGoogleCalendar = () => {
         isConnected,
         connect,
         updateSettings,
+        syncTasks,
+        session,
     };
 };
